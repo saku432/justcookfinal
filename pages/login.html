@@ -1,0 +1,314 @@
+<style>
+/* ============================================================
+   JustCook — Premium Login Page
+   ============================================================ */
+
+.jc-login-page {
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Background Blobs */
+.login-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.15;
+    z-index: -1;
+}
+.blob-1 { width: 400px; height: 400px; top: -100px; left: -100px; background: var(--primary); }
+.blob-2 { width: 350px; height: 350px; bottom: -50px; right: -50px; background: #6366f1; }
+
+.login-card {
+    background: var(--card);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    width: 100%;
+    max-width: 460px;
+    padding: 4rem 3.5rem;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.login-header img {
+    height: 60px;
+    margin-bottom: 1.5rem;
+}
+.login-header h1 {
+    font-size: 2rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+}
+.login-header p {
+    opacity: 0.5;
+    margin-bottom: 3rem;
+    font-size: 0.95rem;
+}
+
+/* Social Login */
+.social-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1.1rem;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-bottom: 2rem;
+}
+.social-btn:hover {
+    border-color: var(--primary);
+    background: white;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2.5rem 0;
+    opacity: 0.3;
+}
+.divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--text);
+}
+.divider span { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; }
+
+/* Form */
+.input-group {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+.input-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.6rem;
+    opacity: 0.6;
+}
+.input-field {
+    width: 100%;
+    padding: 1.1rem 1.4rem;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    border-radius: 18px;
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+.input-field:focus {
+    border-color: var(--primary);
+    outline: none;
+    background: white;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 1.2rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 25px rgba(230, 57, 70, 0.3);
+}
+.login-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(230, 57, 70, 0.45);
+}
+
+.auth-switch {
+    margin-top: 2rem;
+    font-size: 0.9rem;
+    opacity: 0.6;
+}
+.auth-switch a {
+    color: var(--primary);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+#auth-msg {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 1rem;
+    border-radius: 14px;
+    display: none;
+}
+#auth-msg.err { background: rgba(239, 68, 68, 0.1); color: #ef4444; display: block; }
+#auth-msg.ok { background: rgba(34, 197, 94, 0.1); color: #22c55e; display: block; }
+
+@media (max-width: 480px) {
+    .login-card { padding: 2.5rem 1.5rem; border-radius: 30px; }
+    .login-header h1 { font-size: 1.7rem; }
+    .login-btn { padding: 1rem; }
+}
+</style>
+
+<div class="jc-login-page container">
+    <div class="login-blob blob-1"></div>
+    <div class="login-blob blob-2"></div>
+
+    <div class="login-card" data-aos="zoom-in">
+        <div class="login-header">
+            <img src="images/logo.png" alt="JustCook">
+            <h1 id="auth-title">Welcome Back</h1>
+            <p id="auth-subtitle">Sign in to your JustCook account to continue</p>
+        </div>
+
+        <button class="social-btn" id="google-login">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18" alt="G">
+            Continue with Google
+        </button>
+
+        <button class="social-btn" id="email-toggle-btn" style="background:var(--primary); color:white; border:none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:0.5rem;">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            Continue with Email
+        </button>
+
+        <div id="email-form-wrap" style="display:none; margin-top:2.5rem; border-top:1px dashed var(--border); padding-top:2.5rem;">
+            <form id="login-form">
+                <div class="input-group" id="name-group" style="display:none;">
+                    <label>Full Name</label>
+                    <input type="text" id="auth-name" class="input-field" placeholder="John Doe">
+                </div>
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <input type="email" id="auth-email" class="input-field" placeholder="you@example.com" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="auth-pass" class="input-field" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="login-btn" id="submit-btn">Sign In</button>
+            </form>
+        </div>
+
+        <div id="auth-msg"></div>
+
+        <p class="auth-switch">
+            <span id="switch-text">Don't have an account?</span>
+            <a href="javascript:void(0)" id="switch-btn">Create one</a>
+        </p>
+    </div>
+</div>
+
+<script>
+(function authPage() {
+    const form = document.getElementById('login-form');
+    const title = document.getElementById('auth-title');
+    const subtitle = document.getElementById('auth-subtitle');
+    const submitBtn = document.getElementById('submit-btn');
+    const switchBtn = document.getElementById('switch-btn');
+    const switchText = document.getElementById('switch-text');
+    const nameGroup = document.getElementById('name-group');
+    const googleBtn = document.getElementById('google-login');
+    const msgEl = document.getElementById('auth-msg');
+
+    const emailToggle = document.getElementById('email-toggle-btn');
+    const emailFormWrap = document.getElementById('email-form-wrap');
+
+    let mode = 'login'; // or 'signup'
+
+    emailToggle.addEventListener('click', () => {
+        emailToggle.style.display = 'none';
+        googleBtn.style.display = 'none';
+        emailFormWrap.style.display = 'block';
+        if (window.gsap) {
+            gsap.from(emailFormWrap, { opacity: 0, y: 20, duration: 0.5, ease: 'power2.out' });
+        }
+    });
+
+    switchBtn.addEventListener('click', () => {
+        mode = mode === 'login' ? 'signup' : 'login';
+        title.textContent = mode === 'login' ? 'Welcome Back' : 'Join JustCook';
+        subtitle.textContent = mode === 'login' ? 'Sign in to your account' : 'Start your flavor journey today';
+        submitBtn.textContent = mode === 'login' ? 'Sign In' : 'Create Account';
+        switchText.textContent = mode === 'login' ? "Don't have an account?" : "Already have an account?";
+        switchBtn.textContent = mode === 'login' ? 'Create one' : 'Sign in';
+        nameGroup.style.display = mode === 'login' ? 'none' : 'block';
+        msgEl.style.display = 'none';
+        
+        // If they click switch, ensure the form is visible
+        emailFormWrap.style.display = 'block';
+        emailToggle.style.display = 'none';
+        googleBtn.style.display = 'none';
+    });
+
+    function setMsg(txt, type) {
+        msgEl.textContent = txt;
+        msgEl.className = type;
+    }
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('auth-email').value;
+        const pass = document.getElementById('auth-pass').value;
+        const name = document.getElementById('auth-name').value;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Please wait...';
+        msgEl.style.display = 'none';
+
+        let res;
+        if (mode === 'login') {
+            res = await window.Auth.login(email, pass);
+        } else {
+            if (!name) {
+                setMsg('Please enter your name', 'err');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Create Account';
+                return;
+            }
+            res = await window.Auth.signup(email, pass, name);
+        }
+
+        if (res.success) {
+            setMsg(mode === 'login' ? 'Success! Redirecting...' : 'Account created! Redirecting...', 'ok');
+            setTimeout(() => { window.location.hash = '#/'; }, 1500);
+        } else {
+            setMsg(res.error, 'err');
+            submitBtn.disabled = false;
+            submitBtn.textContent = mode === 'login' ? 'Sign In' : 'Create Account';
+        }
+    });
+
+    googleBtn.addEventListener('click', async () => {
+        googleBtn.disabled = true;
+        const res = await window.Auth.loginWithGoogle();
+        if (res.success) {
+            window.location.hash = '#/';
+        } else {
+            setMsg(res.error, 'err');
+            googleBtn.disabled = false;
+        }
+    });
+})();
+</script>

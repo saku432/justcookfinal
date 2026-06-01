@@ -1,0 +1,65 @@
+// ============================================================
+// JustCook — Firestore Security Rules
+// ============================================================
+// Deploy via Firebase CLI:
+//   npm install -g firebase-tools
+//   firebase login
+//   firebase init firestore   (choose your project)
+//   firebase deploy --only firestore:rules
+// ============================================================
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Products ─────────────────────────────────────────────
+    // Anyone can READ products (public catalogue)
+    // Only authenticated admin can WRITE products
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if request.auth != null
+                   && request.auth.token.email == 'admin@justcook.com';
+    }
+
+    // ── Orders ───────────────────────────────────────────────
+    // • Customers: can CREATE an order (place order)
+    // • Customers: can READ their OWN order (by email match)
+    // • Admin only: can READ all orders, UPDATE status
+    // • Nobody: can DELETE orders
+    match /orders/{orderId} {
+
+      // Allow any user (even unauthenticated) to create an order
+      // (customers don't need to be logged in to place an order)
+      allow create: if isValidOrder();
+
+      // Customer can read ONLY if their email matches the order's customer email
+      // Admin can read everything
+      allow read: if isAdmin()
+                  || (request.auth != null
+                      && request.auth.token.email == resource.data.customer.email);
+
+      // Only admin can update (e.g. change status)
+      allow update: if isAdmin();
+
+      // Nobody can delete orders
+      allow delete: if false;
+    }
+
+    // ── Helper functions ─────────────────────────────────────
+    function isAdmin() {
+      return request.auth != null
+          && request.auth.token.email == 'admin@justcook.com';
+    }
+
+    function isValidOrder() {
+      let data = request.resource.data;
+      return data.keys().hasAll(['customer', 'items', 'total', 'status'])
+          && data.customer.keys().hasAll(['name', 'phone'])
+          && data.total is number
+          && data.total > 0
+          && data.items is list
+          && data.items.size() > 0;
+    }
+  }
+}

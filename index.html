@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="JustCook - The Future of Food E-commerce">
+    <title>JustCook | 3D + AR Food E-commerce</title>
+
+    <!-- External Libraries -->
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Leaflet.js -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="css/home-page.css" />
+
+    <link rel="icon" href="images/logo.png" type="image/x-icon">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+</head>
+
+<body class="light-theme">
+    <!-- Navbar -->
+    <nav id="navbar" class="navbar" style="position: fixed; top: 1.5rem; left: 50%; transform: translateX(-50%); width: 95%; max-width: 1200px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 24px; z-index: 1000; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); height: 74px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem;">
+        <div class="nav-brand">
+            <a href="#/" style="display: flex; align-items: center; text-decoration: none;">
+                <img src="images/logo.png" alt="JustCook Logo" style="height: 50px; width: auto; object-fit: contain;">
+            </a>
+        </div>
+        
+        <!-- Desktop Links -->
+        <div class="nav-links desktop-only" id="navLinks" style="display: flex; gap: 2.5rem; align-items: center;">
+            <a href="#/" class="nav-link active" style="font-weight: 700; font-size: 0.95rem; opacity: 0.9; text-decoration: none; color: inherit;">Home</a>
+            <a href="#/products" class="nav-link" style="font-weight: 700; font-size: 0.95rem; opacity: 0.6; text-decoration: none; color: inherit;">Shop</a>
+            <a href="#/orders" class="nav-link" style="font-weight: 700; font-size: 0.95rem; opacity: 0.6; text-decoration: none; color: inherit;">My Orders</a>
+            <a href="#/tracker" class="nav-link" style="font-weight: 700; font-size: 0.95rem; opacity: 0.6; text-decoration: none; color: inherit;">Track</a>
+            <a href="#/contact" class="nav-link" style="font-weight: 700; font-size: 0.95rem; opacity: 0.6; text-decoration: none; color: inherit;">Contact</a>
+        </div>
+
+        <div class="nav-actions" style="display: flex; gap: 0.8rem; align-items: center;">
+            <a href="#/cart" class="icon-btn cart-btn" style="width: 44px; height: 44px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; transition: 0.3s; position: relative; box-shadow: 0 8px 20px rgba(255, 90, 95, 0.3); text-decoration: none;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                <span id="cart-count" class="badge" style="position: absolute; top: -5px; right: -5px; background: #fff; color: var(--primary); font-size: 0.7rem; font-weight: 900; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid var(--primary);">0</span>
+            </a>
+            <a href="#/login" id="user-btn" class="icon-btn user-btn" style="width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; transition: 0.3s; text-decoration: none; color: inherit;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+            </a>
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="icon-btn mobile-only" style="width: 44px; height: 44px; border-radius: 50%; background: rgba(0,0,0,0.05); display: none; align-items: center; justify-content: center; transition: 0.3s;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation Overlay -->
+    <div id="mobile-nav-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); z-index: 2000; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2rem; opacity: 0; transition: 0.4s;">
+        <button id="close-mobile-btn" style="position: absolute; top: 2rem; right: 2rem; width: 50px; height: 50px; border-radius: 50%; background: rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        <a href="#/" class="mobile-link" style="font-size: 2rem; font-weight: 900; text-decoration: none; color: inherit;">Home</a>
+        <a href="#/products" class="mobile-link" style="font-size: 2rem; font-weight: 900; text-decoration: none; color: inherit;">Shop</a>
+        <a href="#/orders" class="mobile-link" style="font-size: 2rem; font-weight: 900; text-decoration: none; color: inherit;">My Orders</a>
+        <a href="#/tracker" class="mobile-link" style="font-size: 2rem; font-weight: 900; text-decoration: none; color: inherit;">Track</a>
+        <a href="#/contact" class="mobile-link" style="font-size: 2rem; font-weight: 900; text-decoration: none; color: inherit;">Contact</a>
+    </div>
+
+    <style>
+        @media (max-width: 768px) {
+            .desktop-only { display: none !important; }
+            .mobile-only { display: flex !important; }
+            /* Native App Header Style */
+            .navbar { 
+                padding: 0 1rem !important; 
+                height: 60px !important; 
+                top: 0 !important; 
+                width: 100% !important; 
+                max-width: 100% !important;
+                border-radius: 0 !important;
+                border: none !important;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+                justify-content: center !important;
+                background: rgba(255, 255, 255, 0.98) !important;
+            }
+            .nav-brand img { height: 35px !important; }
+            .pd-main-grid { grid-template-columns: 1fr !important; gap: 2rem !important; }
+            
+            .nav-actions { display: none !important; }
+            
+            /* Hide the footer entirely on mobile for a true native app feel */
+            .footer { display: none !important; }
+            
+            /* Native App Layout & Scrolling */
+            body { 
+                padding-bottom: 70px !important; 
+                padding-top: 60px !important; /* Offset for the fixed top navbar */
+                overscroll-behavior-y: none;
+                -webkit-tap-highlight-color: transparent;
+                background-color: #f8fafc; /* Optional: forces a clean background */
+            }
+            
+            /* Hide scrollbars for a cleaner app look */
+            ::-webkit-scrollbar {
+                display: none;
+            }
+            * {
+                scrollbar-width: none;
+            }
+            
+            .mobile-taskbar {
+                display: flex !important;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(20px);
+                border-top: 1px solid rgba(0, 0, 0, 0.05);
+                z-index: 9999;
+                padding: 0.5rem 0;
+                justify-content: space-around;
+                align-items: center;
+                box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+                padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+            }
+            .taskbar-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-decoration: none;
+                color: #64748b;
+                font-size: 0.7rem;
+                font-weight: 600;
+                gap: 0.3rem;
+                transition: color 0.3s;
+            }
+            .taskbar-item i { font-size: 1.2rem; }
+            .taskbar-item.active { color: var(--primary); }
+            .taskbar-badge {
+                position: absolute;
+                top: -5px;
+                right: -10px;
+                background: var(--primary);
+                color: white;
+                font-size: 0.6rem;
+                font-weight: 800;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+    </style>
+
+    <!-- Main Content Container -->
+    <main id="app-root">
+        <!-- Dynamic content goes here -->
+        <div class="loader-container">
+            <div class="spinner"></div>
+            <p>Loading the future...</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" style="background: #0f172a; border-top: 1px solid #1e293b; color: #f1f5f9; padding: 0;">
+        <div style="padding: 6rem 2rem 4rem; max-width: 1200px; margin: 0 auto;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 4rem;">
+                <!-- Brand -->
+                <div data-aos="fade-up">
+                    <div style="margin-bottom: 2rem;">
+                        <img src="images/logo.png" alt="JustCook Logo" style="height: 65px; width: auto; object-fit: contain; filter: brightness(0) invert(1);">
+                    </div>
+                    <p style="font-size: 1rem; opacity: 0.6; line-height: 1.8; margin-bottom: 2.5rem;">Authentic regional mixes crafted for the modern home chef. Bringing heritage flavors to your kitchen.</p>
+                    <div style="display: flex; gap: 1.2rem;">
+                        <a href="https://www.instagram.com/justcook.in" target="_blank" style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; transition: 0.3s; color: white; text-decoration: none;" onmouseover="this.style.background='var(--primary)'" onmouseout="this.style.background='rgba(255,255,255,0.05)'"><i class="fab fa-instagram"></i></a>
+                        <a href="https://wa.me/919840462831" target="_blank" style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; transition: 0.3s; color: white; text-decoration: none;" onmouseover="this.style.background='#25D366'" onmouseout="this.style.background='rgba(255,255,255,0.05)'"><i class="fab fa-whatsapp"></i></a>
+                        <a href="https://maps.app.goo.gl/9y7LetSw1GHmf5Lq5?g_st=aw" target="_blank" style="width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; transition: 0.3s; color: white; text-decoration: none;" onmouseover="this.style.background='#4facfe'" onmouseout="this.style.background='rgba(255,255,255,0.05)'"><i class="fas fa-map-marker-alt"></i></a>
+                    </div>
+                </div>
+
+                <!-- Products -->
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <h4 style="font-family:'Outfit',sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 2rem; color: var(--primary);">Products</h4>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem; padding: 0;">
+                        <li><a href="#/product/pani-puri-masala" style="opacity:0.6; font-size:0.95rem; text-decoration:none; color: white; transition:0.3s;" onmouseover="this.style.opacity=1; this.style.paddingLeft='10px'" onmouseout="this.style.opacity=0.6; this.style.paddingLeft='0'">Pani Puri Masala</a></li>
+                        <li><a href="#/product/waffle-mix" style="opacity:0.6; font-size:0.95rem; text-decoration:none; color: white; transition:0.3s;" onmouseover="this.style.opacity=1; this.style.paddingLeft='10px'" onmouseout="this.style.opacity=0.6; this.style.paddingLeft='0'">Waffle Mixes</a></li>
+                        <li><a href="#/product/fried-chicken-hot-spicy" style="opacity:0.6; font-size:0.95rem; text-decoration:none; color: white; transition:0.3s;" onmouseover="this.style.opacity=1; this.style.paddingLeft='10px'" onmouseout="this.style.opacity=0.6; this.style.paddingLeft='0'">Fried Chicken Mix</a></li>
+                        <li><a href="#/products" style="opacity:0.6; font-size:0.95rem; text-decoration:none; color: white; transition:0.3s;" onmouseover="this.style.opacity=1; this.style.paddingLeft='10px'" onmouseout="this.style.opacity=0.6; this.style.paddingLeft='0'">Instant Mixes</a></li>
+                    </ul>
+                </div>
+
+                <!-- Quick Links -->
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <h4 style="font-family:'Outfit',sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 2rem; color: var(--primary);">Quick Links</h4>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem; padding: 0;">
+                        <li><a href="#/" style="opacity:0.6; font-size:0.95rem; text-decoration:none; color: white; transition:0.3s;" onmouseover="this.style.opacity=1; this.style.paddingLeft='10px'" onmouseout="this.style.opacity=0.6; this.style.paddingLeft='0'">Home</a></li>
+                        <li><a href="#/products" style="opacity:0.6; font-size:0.95rem; text-decoration:none; color: white; transition:0.3s;" onmouseover="this.style.opacity=1; this.style.paddingLeft='10px'" onmouseout="this.style.opacity=0.6; this.style.paddingLeft='0'">Shop All</a></li>
+                        <li><a href="#/tracker" style="opacity:0.6; font-size:0.95rem; text-decoration:none; color: white; transition:0.3s;" onmouseover="this.style.opacity=1; this.style.paddingLeft='10px'" onmouseout="this.style.opacity=0.6; this.style.paddingLeft='0'">Track Order</a></li>
+                        <li><a href="#/contact" style="opacity:0.6; font-size:0.95rem; text-decoration:none; color: white; transition:0.3s;" onmouseover="this.style.opacity=1; this.style.paddingLeft='10px'" onmouseout="this.style.opacity=0.6; this.style.paddingLeft='0'">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div data-aos="fade-up" data-aos-delay="300">
+                    <h4 style="font-family:'Outfit',sans-serif; font-size: 1.1rem; font-weight: 800; margin-bottom: 2rem; color: var(--primary);">Visit Us</h4>
+                    <p style="font-size: 0.95rem; opacity: 0.6; line-height: 1.8; margin-bottom: 1rem;">
+                        Elli Sathiram Road, Sriram Nagar<br>
+                        Villupuram, TN 605602
+                    </p>
+                    <p style="font-size: 0.95rem; opacity: 0.6; line-height: 1.8;">
+                        <span style="color: var(--primary); font-weight: 700;">Email:</span> Justcook32@gmail.com<br>
+                        <span style="color: var(--primary); font-weight: 700;">Phone:</span> +91 98404 62831
+                    </p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 6rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem;">
+                <p style="font-size: 0.9rem; opacity: 0.4;">&copy; 2026 JustCook. All rights reserved.</p>
+                <div style="display: flex; gap: 2rem;">
+                    <a href="#" style="font-size: 0.8rem; opacity: 0.4; text-decoration: none; color: white;">Privacy Policy</a>
+                    <a href="#" style="font-size: 0.8rem; opacity: 0.4; text-decoration: none; color: white;">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- Mobile Bottom Taskbar -->
+    <div class="mobile-taskbar" style="display: none;">
+        <a href="#/" class="taskbar-item">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="#/products" class="taskbar-item">
+            <i class="fas fa-store"></i>
+            <span>Shop</span>
+        </a>
+        <a href="#/cart" class="taskbar-item" style="position: relative;">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+            <span class="taskbar-badge" id="taskbar-cart-count">0</span>
+        </a>
+        <a href="#/orders" class="taskbar-item">
+            <i class="fas fa-box-open"></i>
+            <span>Orders</span>
+        </a>
+        <a href="#/login" class="taskbar-item">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </div>
+
+    <!-- ✅ Backend Init (Supabase is server-side now) -->
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+
+    <!-- ✅ Core globals — MUST be plain scripts (not modules) so
+         window.Database and window.Store are ready before the router loads any page -->
+    <script src="js/db.js"></script>
+    <script src="js/store.js"></script>
+
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- Razorpay Checkout -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <!-- EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function () {
+            emailjs.init("YOUR_PUBLIC_KEY"); // Replace with EmailJS Public Key
+        })();
+    </script>
+
+    <!-- Core App Logic (Pure Local Mode) -->
+    <script src="js/auth.js"></script>
+
+    <!-- Toast Notification System -->
+    <div id="toast-container"
+        style="position:fixed; bottom:2rem; right:2rem; z-index:9999; display:flex; flex-direction:column; gap:0.8rem; pointer-events:none;">
+    </div>
+
+    <script>
+        // Responsive Menu Logic
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const closeMobileBtn = document.getElementById('close-mobile-btn');
+        const mobileNav = document.getElementById('mobile-nav-overlay');
+
+        if (mobileMenuBtn) {
+            mobileMenuBtn.onclick = () => {
+                mobileNav.style.display = 'flex';
+                setTimeout(() => {
+                    mobileNav.style.opacity = '1';
+                    mobileNav.style.transform = 'scale(1)';
+                }, 10);
+            };
+        }
+
+        if (closeMobileBtn) {
+            closeMobileBtn.onclick = () => {
+                mobileNav.style.opacity = '0';
+                setTimeout(() => {
+                    mobileNav.style.display = 'none';
+                }, 400);
+            };
+        }
+
+        document.querySelectorAll('.mobile-link').forEach(link => {
+            link.onclick = () => {
+                mobileNav.style.opacity = '0';
+                setTimeout(() => { mobileNav.style.display = 'none'; }, 400);
+            };
+        });
+
+        window.showToast = function (msg, type = 'ok') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const icon = type === 'ok' ? '✓' : '✕';
+            toast.className = 'toast';
+            toast.style.cssText = `
+                background: ${type === 'ok' ? '#10b981' : '#ef4444'};
+                color: white; padding: 1rem 1.5rem; border-radius: 16px;
+                display: flex; align-items: center; gap: 0.8rem;
+                font-weight: 700; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+                animation: toastIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+                pointer-events: auto; min-width: 250px;
+            `;
+            toast.innerHTML = `<span style="background:rgba(255,255,255,0.2); width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center;">${icon}</span>` + msg;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'toastOut 0.4s ease forwards';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        };
+
+        // Animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+        @keyframes toastIn { from { opacity:0; transform:translateX(100px) scale(0.9); } to { opacity:1; transform:translateX(0) scale(1); } }
+        @keyframes toastOut { from { opacity:1; transform:translateX(0) scale(1); } to { opacity:0; transform:translateX(100px) scale(0.9); } }
+    `;
+        document.head.appendChild(style);
+        // UI Synchronization Logic
+        if (window.Store) {
+            window.Store.subscribe(() => {
+                const user = window.Store.getState().user;
+                const navLinks = document.getElementById('navLinks');
+                const userBtn = document.getElementById('user-btn');
+
+                // 1. Admin Link
+                let adminLink = document.getElementById('admin-nav-link');
+                if (user && user.role === 'admin') {
+                    if (!adminLink) {
+                        adminLink = document.createElement('a');
+                        adminLink.id = 'admin-nav-link';
+                        adminLink.href = '#/admin';
+                        adminLink.className = 'nav-link';
+                        adminLink.textContent = 'Dashboard';
+                        adminLink.style.color = 'var(--primary)';
+                        navLinks.appendChild(adminLink);
+                    }
+                } else if (adminLink) {
+                    adminLink.remove();
+                }
+
+                // 2. User Button
+                if (user) {
+                    const initial = (user.name && user.name.length > 0) ? user.name.charAt(0) : 'U';
+                    userBtn.innerHTML = '<div style="width:100%; height:100%; background:var(--primary); color:white; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.8rem; border-radius:50%;">' + initial + '</div>';
+                    userBtn.href = user.role === 'admin' ? '#/admin' : '#/';
+                } else {
+                    userBtn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>';
+                    userBtn.href = '#/login';
+                }
+            });
+        }
+    </script>
+
+    <!-- Router — must load last so globals are available -->
+    <script type="module" src="js/app.js"></script>
+</body>
+
+</html>

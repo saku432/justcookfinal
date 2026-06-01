@@ -1,0 +1,434 @@
+<style>
+/* ============================================================
+   JustCook — Ultra-Realtime Admin Dashboard & "Sheet" View
+   ============================================================ */
+
+.jc-admin-page { padding: 2rem 0 8rem; min-height: 100vh; background: var(--bg); }
+
+/* Top Header */
+.jc-ad-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+.live-pulse {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 1.2rem;
+    background: rgba(34,197,94,0.1);
+    color: #22c55e;
+    border-radius: 99px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+.pulse-dot {
+    width: 8px; height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+@keyframes pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
+
+/* Stats Grid */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+.kpi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+    transition: transform 0.3s;
+}
+.kpi-card:hover { transform: translateY(-5px); }
+.kpi-label { font-size: 0.75rem; font-weight: 800; opacity: 0.5; text-transform: uppercase; letter-spacing: 1px; }
+.kpi-value { font-size: 2.2rem; font-weight: 900; margin: 0.5rem 0; display: block; color: var(--text); }
+.kpi-trend { font-size: 0.8rem; font-weight: 700; color: #22c55e; }
+
+/* Dashboard Tabs */
+.ad-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+}
+.tab-btn {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: all 0.3s;
+    opacity: 0.5;
+}
+.tab-btn.active { opacity: 1; background: var(--primary); color: white; }
+
+/* Sheet View (Spreadsheet Style) */
+.sheet-container {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+}
+.sheet-header {
+    padding: 1.5rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0,0,0,0.02);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.sheet-tools { display: flex; gap: 1rem; align-items: center; }
+.sheet-search {
+    padding: 0.6rem 1.2rem;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.9rem;
+}
+
+.sheet-table-wrap { overflow-x: auto; max-height: 600px; }
+.sheet-table { width: 100%; border-collapse: collapse; min-width: 1000px; }
+.sheet-table th {
+    position: sticky; top: 0;
+    background: var(--card);
+    z-index: 10;
+    text-align: left;
+    padding: 1.2rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 800;
+    opacity: 0.5;
+    border-bottom: 2px solid var(--border);
+}
+.sheet-table td {
+    padding: 1.2rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+.sheet-table tr:hover { background: rgba(255,90,95,0.02); }
+
+.badge { padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.75rem; font-weight: 800; }
+.b-pending { background: rgba(99,102,241,0.1); color: #6366f1; }
+.b-done { background: rgba(34,197,94,0.1); color: #22c55e; }
+
+/* Gate */
+.admin-gate { min-height: 70vh; display: flex; align-items: center; justify-content: center; }
+.gate-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 32px;
+    padding: 4rem; width: 440px; text-align: center;
+}
+
+@media (max-width: 768px) {
+    .jc-ad-top { flex-direction: column; text-align: center; }
+    .kpi-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="jc-admin-page container">
+    <!-- AUTH GATE -->
+    <div id="adminGate" class="admin-gate">
+        <div class="gate-card">
+            <div style="font-size:3rem; margin-bottom:1.5rem;">🔒</div>
+            <h2 style="font-weight:900; margin-bottom:1rem;">Restricted Access</h2>
+            <p id="agMsg" style="opacity:0.5; margin-bottom:2rem;">Please sign in with an Admin account.</p>
+            <a href="#/login" class="btn" style="width:100%;">Go to Login Page</a>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="adminDash" class="hidden">
+        <div class="jc-ad-top">
+            <div>
+                <h1 style="font-weight:900; font-size:2.2rem;">Live Command Center</h1>
+                <p style="opacity:0.5;">Real-time sync enabled • JustCook Cloud</p>
+            </div>
+            <div style="display:flex; gap:1rem; align-items:center;">
+                <div class="live-pulse"><span class="pulse-dot"></span> LIVE DATA</div>
+                <button id="adLogout" class="btn btn-secondary">Logout</button>
+            </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <span class="kpi-label">Revenue (Live)</span>
+                <span class="kpi-value" id="kRevenue">₹0</span>
+                <span class="kpi-trend">↑ 12% vs last week</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">Orders</span>
+                <span class="kpi-value" id="kOrders">0</span>
+                <span class="kpi-trend" style="color:var(--primary);">3 pending processing</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">Customers</span>
+                <span class="kpi-value" id="kCust">0</span>
+                <span class="kpi-trend">New signups today</span>
+            </div>
+            <div class="kpi-card" id="seedCard">
+                <span class="kpi-label">Database Management</span>
+                <div style="margin-top:1.5rem;">
+                    <button id="seedDbBtn" class="btn btn-secondary" style="font-size:0.8rem; width:100%;">Sync Cloud Products</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Tabs -->
+        <div class="ad-tabs">
+            <button class="tab-btn active" data-tab="monitor">Live Monitor</button>
+            <button class="tab-btn" data-tab="orders">All Orders (Sheet)</button>
+            <button class="tab-btn" data-tab="inventory">Inventory</button>
+        </div>
+
+        <!-- Live Monitor View -->
+        <div id="view-monitor" class="view-section">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                <h2 style="font-weight:800; font-size:1.2rem;">Incoming Orders</h2>
+                <button id="simulateOrder" class="btn btn-secondary" style="font-size:0.75rem;">+ Simulate Test Order</button>
+            </div>
+            <div id="monitorGrid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:1.5rem;">
+                <!-- Live cards here -->
+            </div>
+        </div>
+
+        <!-- Sheet View -->
+        <div id="view-orders" class="view-section hidden">
+            <div class="sheet-container">
+            <div class="sheet-header">
+                <h2 style="font-weight:800; font-size:1.2rem;">Order Ledger</h2>
+                <div class="sheet-tools">
+                    <input type="text" class="sheet-search" id="orderSearch" placeholder="Filter by ID or Name...">
+                    <button class="btn btn-secondary" id="exportBtn" style="font-size:0.8rem;">Export to CSV</button>
+                </div>
+            </div>
+            <div class="sheet-table-wrap">
+                <table class="sheet-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date & Time</th>
+                            <th>Customer Name</th>
+                            <th>Contact</th>
+                            <th>Total Amount</th>
+                            <th>Payment ID (UTR)</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersBody">
+                        <!-- Realtime data injected here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function realTimeAdmin() {
+    let _unsub = null;
+    let _orders = [];
+
+    const gate = document.getElementById('adminGate');
+    const dash = document.getElementById('adminDash');
+
+    // ── Real-time Auth Gate ─────────────────────────────
+    function checkAuth() {
+        const user = window.Store ? window.Store.getState().user : null;
+        if (user && user.role === 'admin') {
+            gate.classList.add('hidden');
+            dash.classList.remove('hidden');
+            initLiveSync();
+        } else {
+            gate.classList.remove('hidden');
+            dash.classList.add('hidden');
+        }
+    }
+    if (window.Store) window.Store.subscribe(checkAuth);
+    checkAuth();
+
+    document.getElementById('adLogout').addEventListener('click', () => window.Auth.logout());
+
+    // ── Live Firestore Sync ──────────────────────────────
+    function initLiveSync() {
+        if (_unsub) return;
+        const DB = window.Database;
+        if (!DB) return;
+
+        _unsub = DB.subscribeToOrders(orders => {
+            _orders = orders;
+            updateStats(orders);
+            renderSheet(orders);
+            renderMonitor(orders);
+        });
+    }
+
+    function updateStats(orders) {
+        let rev = 0;
+        let custs = new Set();
+        orders.forEach(o => {
+            rev += (o.total || 0);
+            if (o.customer?.phone) custs.add(o.customer.phone);
+        });
+
+        document.getElementById('kRevenue').textContent = '₹' + Math.round(rev).toLocaleString('en-IN');
+        document.getElementById('kOrders').textContent = orders.length;
+        document.getElementById('kCust').textContent = custs.size;
+    }
+
+    function renderMonitor(orders) {
+        const grid = document.getElementById('monitorGrid');
+        // Only show pending/active orders in monitor
+        const active = orders.filter(o => o.status !== 'Delivered' && o.status !== 'Cancelled').slice(0, 12);
+        
+        if (active.length === 0) {
+            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:4rem; opacity:0.4;">No active orders right now.</div>';
+            return;
+        }
+
+        grid.innerHTML = active.map(o => `
+            <div class="kpi-card" style="border-left: 5px solid var(--primary);">
+                <div style="display:flex; justify-content:space-between; margin-bottom:1rem;">
+                    <span style="font-weight:900; color:var(--primary);">${o.id}</span>
+                    <span class="badge b-pending">${o.status}</span>
+                </div>
+                <div style="margin-bottom:1.5rem;">
+                    <div style="font-weight:800;">${o.customer?.name || 'Guest'}</div>
+                    <div style="font-size:0.8rem; opacity:0.6;">${o.customer?.phone || ''}</div>
+                </div>
+                <div style="font-size:1.2rem; font-weight:900; margin-bottom:1.5rem;">₹${(o.total || 0).toFixed(2)}</div>
+                <div style="margin-bottom:1rem; font-size:0.75rem;">
+                    <span style="opacity:0.6;">UTR:</span> 
+                    <span style="font-family:monospace; font-weight:700;">${o.paymentId || 'N/A'}</span>
+                </div>
+                <select onchange="window.Database.updateOrderStatus('${o.id}', this.value)" style="width:100%; padding:0.8rem; border-radius:12px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-weight:700;">
+                    <option value="Confirmed" ${o.status==='Confirmed'?'selected':''}>Confirmed</option>
+                    <option value="Processing" ${o.status==='Processing'?'selected':''}>Processing</option>
+                    <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Mark Delivered</option>
+                </select>
+            </div>
+        `).join('');
+    }
+
+    // ── Tab Switching ────────────────────────────────────
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const sections = document.querySelectorAll('.view-section');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            
+            const target = btn.dataset.tab;
+            sections.forEach(s => {
+                if (s.id === `view-${target}`) s.classList.remove('hidden');
+                else s.classList.add('hidden');
+            });
+        });
+    });
+
+    // ── Simulation ──────────────────────────────────────
+    document.getElementById('simulateOrder').addEventListener('click', async () => {
+        const testData = {
+            customer: { name: "Test User", phone: "9876543210", address: "123 Demo St" },
+            items: [{ id: "pani-puri-mint", name: "Pani Puri Masala", price: 15, qty: 2 }],
+            total: 30,
+            paymentMethod: "UPI"
+        };
+        await window.Database.placeOrder(testData);
+        if (window.showToast) window.showToast("Test order incoming!");
+    });
+
+    function renderSheet(orders) {
+        const tbody = document.getElementById('ordersBody');
+        const q = document.getElementById('orderSearch').value.toLowerCase();
+        
+        const filtered = orders.filter(o => 
+            o.id.toLowerCase().includes(q) || 
+            (o.customer?.name || '').toLowerCase().includes(q)
+        );
+
+        tbody.innerHTML = filtered.map(o => `
+            <tr>
+                <td style="color:var(--primary); font-weight:800;">${o.id}</td>
+                <td style="opacity:0.6; font-size:0.8rem;">${new Date(o.createdAt).toLocaleString()}</td>
+                <td>${o.customer?.name || 'Guest'}</td>
+                <td>${o.customer?.phone || 'N/A'}</td>
+                <td>₹${(o.total || 0).toFixed(2)}</td>
+                <td>
+                    <code style="font-size:0.8rem; font-weight:700;">${o.paymentId || 'N/A'}</code>
+                </td>
+                <td><span class="badge ${o.status==='Delivered'?'b-done':'b-pending'}">${o.status || 'Confirmed'}</span></td>
+                <td>
+                    <select onchange="window.Database.updateOrderStatus('${o.id}', this.value)" style="padding:0.4rem; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:0.8rem;">
+                        <option value="Confirmed" ${o.status==='Confirmed'?'selected':''}>Confirmed</option>
+                        <option value="Processing" ${o.status==='Processing'?'selected':''}>Processing</option>
+                        <option value="Delivered" ${o.status==='Delivered'?'selected':''}>Delivered</option>
+                        <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancelled</option>
+                    </select>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // ── Search & Tools ───────────────────────────────────
+    document.getElementById('orderSearch').addEventListener('input', () => renderSheet(_orders));
+
+    document.getElementById('exportBtn').addEventListener('click', () => {
+        if (_orders.length === 0) return;
+        const csv = [
+            ["Order ID", "Date", "Customer", "Phone", "Total", "Status"].join(","),
+            ..._orders.map(o => [
+                o.id, 
+                new Date(o.createdAt).toISOString(), 
+                o.customer?.name || 'Guest', 
+                o.customer?.phone || '', 
+                o.total, 
+                o.status
+            ].join(","))
+        ].join("\n");
+        
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `JustCook_Orders_${new Date().toISOString().slice(0,10)}.csv`;
+        a.click();
+    });
+
+    // ── Database Seeder ──────────────────────────────────
+    document.getElementById('seedDbBtn').addEventListener('click', async function() {
+        this.disabled = true;
+        this.textContent = "Syncing...";
+        try {
+            await window.Database.seedInitialProducts();
+            window.showToast("Cloud Database Synced Successfully!");
+        } catch (e) {
+            window.showToast("Sync Error: " + e.message, "err");
+        }
+        this.disabled = false;
+        this.textContent = "Sync Cloud Products";
+    });
+
+    window.addEventListener('hashchange', () => { if (_unsub) _unsub(); });
+})();
+</script>

@@ -1,0 +1,312 @@
+<style>
+    /* ============================================================
+       JustCook — Refined Open Layout (Suggestions + Simple Form)
+       ============================================================ */
+    .pd-final-section {
+        padding: 6rem 2rem 10rem;
+        background: var(--bg);
+        min-height: 100vh;
+    }
+
+    .pd-main-grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5rem;
+        align-items: flex-start;
+    }
+
+    @media (max-width: 900px) {
+        .pd-main-grid { grid-template-columns: 1fr; gap: 3rem; text-align: center; }
+    }
+
+    /* Floating Image Stage */
+    .pd-stage {
+        position: sticky;
+        top: 150px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .pd-stage img {
+        width: 100%;
+        max-width: 480px;
+        filter: drop-shadow(0 30px 60px rgba(0,0,0,0.15));
+        animation: pdBreath 4s ease-in-out infinite;
+    }
+
+    @keyframes pdBreath {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.03); }
+    }
+
+    /* Simple Buy Form */
+    .pd-info-panel {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .pd-category {
+        color: var(--primary);
+        font-weight: 800;
+        letter-spacing: 2px;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .pd-title {
+        font-size: 3.5rem;
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+    }
+
+    .pd-desc {
+        font-size: 1.1rem;
+        line-height: 1.7;
+        opacity: 0.6;
+        margin-bottom: 3rem;
+    }
+
+    .pd-buy-form {
+        background: var(--card);
+        padding: 2.5rem;
+        border-radius: 30px;
+        border: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.03);
+    }
+
+    .pd-form-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .pd-price { font-size: 2rem; font-weight: 800; }
+
+    .pd-qty-selector {
+        display: flex;
+        align-items: center;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 0.5rem;
+    }
+
+    .qty-btn {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        font-weight: 800;
+        cursor: pointer;
+        color: var(--text);
+    }
+
+    #pd-qty-val {
+        width: 50px;
+        text-align: center;
+        font-weight: 800;
+        font-size: 1.1rem;
+    }
+
+    .pd-submit-btn {
+        height: 64px;
+        background: var(--primary);
+        color: white;
+        border-radius: 15px;
+        font-weight: 800;
+        font-size: 1.1rem;
+        box-shadow: 0 10px 30px rgba(255, 90, 95, 0.3);
+        transition: 0.3s;
+    }
+
+    .pd-submit-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(255, 90, 95, 0.4); }
+
+    /* Suggestions Section (Open Design) */
+    .pd-suggestions {
+        margin-top: 10rem;
+        border-top: 1px solid var(--border);
+        padding-top: 5rem;
+    }
+
+    .sug-title {
+        font-size: 2rem;
+        font-weight: 900;
+        margin-bottom: 4rem;
+        text-align: center;
+    }
+
+    .sug-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 3rem;
+    }
+
+    .sug-card {
+        background: transparent;
+        border: none;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .sug-card:hover { transform: translateY(-15px); }
+
+    .sug-img-wrap {
+        position: relative;
+        width: 100%;
+        padding-top: 100%; /* Square aspect ratio */
+        margin-bottom: 1.5rem;
+    }
+
+    .sug-img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        height: 90%;
+        object-fit: contain;
+        filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1));
+        transition: 0.4s;
+    }
+
+    .sug-card:hover .sug-img {
+        transform: translate(-50%, -60%) scale(1.1);
+        filter: drop-shadow(0 25px 40px rgba(0,0,0,0.15));
+    }
+
+    .sug-name { font-weight: 800; font-size: 1.1rem; margin-bottom: 0.5rem; opacity: 0.8; }
+    .sug-price { font-weight: 800; color: var(--primary); font-size: 1rem; }
+
+</style>
+
+<div class="pd-final-section container">
+    <div id="pd-loader" style="height: 60vh; display: flex; align-items: center; justify-content: center;">
+        <div class="spinner"></div>
+    </div>
+
+    <div id="pd-main-view" style="display: none;">
+        <div class="pd-main-grid">
+            <!-- Visuals -->
+            <div class="pd-stage">
+                <img id="pd-img" src="" alt="">
+            </div>
+
+            <!-- Content -->
+            <div class="pd-info-panel">
+                <p class="pd-category" id="pd-cat"></p>
+                <h1 class="pd-title" id="pd-title"></h1>
+                <p class="pd-desc" id="pd-desc"></p>
+
+                <div class="pd-buy-form">
+                    <div class="pd-form-row">
+                        <div class="pd-price" id="pd-price"></div>
+                        <div class="pd-qty-selector">
+                            <div class="qty-btn" id="pd-minus">−</div>
+                            <div id="pd-qty-val">1</div>
+                            <div class="qty-btn" id="pd-plus">+</div>
+                        </div>
+                    </div>
+                    
+                    <div style="display:flex; flex-direction:column; gap:0.8rem;">
+                        <span style="font-size:0.8rem; font-weight:800; opacity:0.4; letter-spacing:1px;">AVAILABLE SIZES</span>
+                        <div style="display:flex; gap:0.5rem;" id="pd-sizes">
+                            <!-- Sizes injected here -->
+                        </div>
+                    </div>
+
+                    <button class="pd-submit-btn" id="pd-add">ADD TO CART</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Suggestions -->
+        <div class="pd-suggestions">
+            <h2 class="sug-title">People Also Crave</h2>
+            <div class="sug-grid" id="pd-sug-grid"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const loader = document.getElementById('pd-loader');
+    const view = document.getElementById('pd-main-view');
+
+    let pid = window.__currentProductId || window.location.hash.split('/').pop();
+
+    const fallback = {
+        'pp-mint': { name: 'Pani Puri - Mint', cat: 'Pani Puri', desc: 'The quintessential refreshing mint-forward masala.', img: 'images/pp-mint.jpg', price: 400 },
+        'pp-tamarind': { name: 'Pani Puri - Tamarind', cat: 'Pani Puri', desc: 'Classic sweet and sour tamarind blend with traditional spices.', img: 'images/pp-tamarind.jpg', price: 400 },
+        'fc-hot-spicy': { name: 'Fried Chicken - Hot', cat: 'Snacks', desc: 'Extra hot and spicy breading mix for that perfect crunch.', img: 'images/Extra Hot And Spicy.jpg.jpeg', price: 350 },
+        'waffle-mix': { name: 'Belgian Waffle Mix', cat: 'Ready Mix', desc: 'Cafe-style crispy waffles made easy in your home kitchen.', img: 'images/Waffles Mix.jpg.jpeg', price: 300 }
+    };
+
+    let currentQty = 1;
+
+    function render(p) {
+        if (!p) return;
+        document.getElementById('pd-img').src = p.imageUrl || p.img || 'images/logo.png';
+        document.getElementById('pd-title').textContent = p.name;
+        document.getElementById('pd-desc').textContent = p.description || p.desc;
+        document.getElementById('pd-cat').textContent = p.category || p.cat;
+        document.getElementById('pd-price').textContent = '₹' + (p.price || 400);
+
+        // Size chips
+        const sizes = ['250g', '500g', '1kg'];
+        document.getElementById('pd-sizes').innerHTML = sizes.map(s => 
+            `<div style="padding:0.6rem 1rem; border:2px solid var(--border); border-radius:10px; font-weight:800; font-size:0.85rem; cursor:pointer;" onclick="this.parentNode.querySelectorAll('div').forEach(d=>d.style.borderColor='var(--border)'); this.style.borderColor='var(--primary)'">${s}</div>`
+        ).join('');
+
+        // Qty logic
+        document.getElementById('pd-plus').onclick = () => { currentQty++; document.getElementById('pd-qty-val').textContent = currentQty; };
+        document.getElementById('pd-minus').onclick = () => { if(currentQty > 1) { currentQty--; document.getElementById('pd-qty-val').textContent = currentQty; } };
+
+        // Suggestions (Borderless Minimalist)
+        const allKeys = Object.keys(fallback);
+        const suggested = allKeys.filter(k => k !== pid).slice(0, 4);
+        document.getElementById('pd-sug-grid').innerHTML = suggested.map(sid => {
+            const s = fallback[sid];
+            return `<a href="#/product/${sid}" class="sug-card">
+                <div class="sug-img-wrap"><img src="${s.img}" class="sug-img"></div>
+                <h3 class="sug-name">${s.name}</h3>
+                <div class="sug-price">₹${s.price}</div>
+            </a>`;
+        }).join('');
+
+        document.getElementById('pd-add').onclick = () => {
+            if (window.Store) {
+                window.Store.addToCart({ productId: p.id || pid, name: p.name, price: p.price, qty: currentQty, imageUrl: p.imageUrl || p.img });
+                window.showToast(p.name + ' added to cart!');
+            }
+        };
+
+        loader.style.display = 'none';
+        view.style.display = 'block';
+    }
+
+    if (window.Database) {
+        window.Database.getProductById(pid).then(p => {
+            if (p) render(p);
+            else render(fallback[pid] || fallback['pp-mint']);
+        }).catch(() => render(fallback[pid] || fallback['pp-mint']));
+    } else {
+        render(fallback[pid] || fallback['pp-mint']);
+    }
+
+    setTimeout(() => { if(loader.style.display !== 'none') render(fallback[pid] || fallback['pp-mint']); }, 1000);
+})();
+</script>

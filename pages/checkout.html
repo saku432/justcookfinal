@@ -1,0 +1,848 @@
+<style>
+    /* ============================================================
+   JustCook — Checkout Page (Premium Everest Animations)
+   ============================================================ */
+
+    .co-page {
+        padding: 6rem 0 10rem;
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+    }
+
+    /* Dynamic background elements */
+    .co-blob {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+        filter: blur(80px);
+        opacity: 0.15;
+        z-index: -1;
+    }
+
+    .co-blob-1 {
+        width: 500px;
+        height: 500px;
+        top: -150px;
+        left: -150px;
+        background: var(--primary);
+    }
+
+    .co-blob-2 {
+        width: 400px;
+        height: 400px;
+        bottom: -100px;
+        right: -100px;
+        background: #6366f1;
+    }
+
+    .co-blob-3 {
+        width: 250px;
+        height: 250px;
+        top: 30%;
+        right: 10%;
+        background: #facc15;
+    }
+
+    .co-title {
+        font-size: clamp(2.8rem, 6vw, 4rem);
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        letter-spacing: -0.03em;
+        background: linear-gradient(135deg, var(--text) 30%, var(--primary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .co-subtitle {
+        text-align: center;
+        opacity: 0.5;
+        margin-bottom: 4rem;
+        font-size: 1.1rem;
+    }
+
+    /* Progress Stepper */
+    .co-stepper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 600px;
+        margin: 0 auto 5rem;
+        position: relative;
+    }
+
+    .co-step-item {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 2;
+        flex: 1;
+    }
+
+    .co-step-dot {
+        width: 50px;
+        height: 50px;
+        background: var(--card);
+        border: 2px solid var(--border);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: var(--text);
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        margin-bottom: 0.8rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .co-step-line {
+        position: absolute;
+        top: 25px;
+        left: calc(50% + 25px);
+        width: calc(100% - 50px);
+        height: 2px;
+        background: var(--border);
+        z-index: 1;
+    }
+
+    .co-step-item.active .co-step-dot {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: white;
+        transform: scale(1.2);
+        box-shadow: 0 10px 25px rgba(230, 57, 70, 0.4);
+    }
+
+    .co-step-item.done .co-step-dot {
+        background: #22c55e;
+        border-color: #22c55e;
+        color: white;
+    }
+
+    .co-step-label {
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.4;
+        transition: opacity 0.3s;
+    }
+
+    .co-step-item.active .co-step-label,
+    .co-step-item.done .co-step-label {
+        opacity: 1;
+    }
+
+    /* Main Grid */
+    .co-grid {
+        display: grid;
+        grid-template-columns: 1.8fr 1fr;
+        gap: 4rem;
+        align-items: start;
+    }
+
+    /* Panels */
+    .co-panels {
+        position: relative;
+    }
+
+    .co-panel {
+        display: none;
+        animation: panelEnter 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+
+    .co-panel.active {
+        display: block;
+    }
+
+    @keyframes panelEnter {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .co-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 40px;
+        padding: 3.5rem;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.06);
+    }
+
+    .dark-theme .co-card {
+        background: rgba(15, 23, 42, 0.7);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .co-card h2 {
+        font-size: 1.8rem;
+        font-weight: 800;
+        margin-bottom: 2.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    /* Inputs */
+    .co-group {
+        margin-bottom: 2rem;
+    }
+
+    .co-label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        margin-bottom: 0.8rem;
+        opacity: 0.6;
+    }
+
+    .co-input {
+        width: 100%;
+        padding: 1.2rem 1.5rem;
+        background: var(--bg);
+        border: 2px solid var(--border);
+        border-radius: 20px;
+        color: var(--text);
+        font-size: 1.05rem;
+        font-weight: 600;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .co-input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 5px rgba(230, 57, 70, 0.1);
+        outline: none;
+        transform: scale(1.02);
+    }
+
+    .co-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    /* Summary */
+    .co-sidebar {
+        position: sticky;
+        top: 6rem;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 40px;
+        padding: 3rem;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Mobile Overrides */
+    @media (max-width: 992px) {
+        .co-grid {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+
+        .co-sidebar {
+            position: static;
+            padding: 2rem;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .co-page {
+            padding: 4rem 0 6rem;
+        }
+
+        .co-card {
+            padding: 2.5rem 1.5rem;
+            border-radius: 30px;
+        }
+
+        .co-step-label {
+            font-size: 0.7rem;
+        }
+
+        .co-step-dot {
+            width: 34px;
+            height: 34px;
+            font-size: 0.9rem;
+        }
+
+        .co-step-line {
+            width: calc(100% - 34px);
+            left: 17px;
+        }
+
+        .co-card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+    }
+
+    .co-sidebar h3 {
+        font-size: 1.4rem;
+        font-weight: 800;
+        margin-bottom: 2rem;
+    }
+
+    .co-sum-item {
+        display: flex;
+        gap: 1.2rem;
+        margin-bottom: 1.5rem;
+        align-items: center;
+    }
+
+    .co-sum-img {
+        width: 70px;
+        height: 70px;
+        border-radius: 18px;
+        object-fit: cover;
+        background: var(--bg);
+        border: 1px solid var(--border);
+    }
+
+    .co-sum-info {
+        flex: 1;
+    }
+
+    .co-sum-info b {
+        display: block;
+        font-size: 1rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .co-sum-info p {
+        font-size: 0.85rem;
+        opacity: 0.5;
+    }
+
+    .co-sum-price {
+        font-weight: 800;
+        color: var(--primary);
+    }
+
+    .co-line {
+        margin: 2rem 0;
+        border: none;
+        border-top: 2px dashed var(--border);
+    }
+
+    .co-total-box {
+        margin-top: 1.5rem;
+    }
+
+    .co-row-t {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .co-row-t.big {
+        font-size: 1.8rem;
+        font-weight: 900;
+        margin-top: 1.5rem;
+        color: var(--primary);
+    }
+
+    /* Buttons */
+    .co-btn {
+        width: 100%;
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 1.3rem;
+        border-radius: 24px;
+        font-size: 1.1rem;
+        font-weight: 800;
+        cursor: pointer;
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 15px 30px rgba(230, 57, 70, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.8rem;
+    }
+
+    .co-btn:hover {
+        transform: translateY(-8px) scale(1.03);
+        box-shadow: 0 25px 50px rgba(230, 57, 70, 0.45);
+    }
+
+    .co-btn-secondary {
+        background: var(--bg);
+        color: var(--text);
+        border: 2px solid var(--border);
+        box-shadow: none;
+    }
+
+    .co-btn-secondary:hover {
+        background: var(--border);
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    /* UPI Success animation */
+    .co-success-card {
+        text-align: center;
+        padding: 5rem 3rem;
+    }
+
+    .success-icon-wrap {
+        width: 120px;
+        height: 120px;
+        background: #22c55e;
+        color: white;
+        font-size: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin: 0 auto 3rem;
+        box-shadow: 0 20px 40px rgba(34, 197, 94, 0.3);
+    }
+
+    @media (max-width: 1024px) {
+        .co-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .co-sidebar {
+            position: static;
+            margin-top: 3rem;
+        }
+    }
+</style>
+
+<div class="co-page container" id="co-root">
+    <div class="co-blob co-blob-1"></div>
+    <div class="co-blob co-blob-2"></div>
+    <div class="co-blob co-blob-3"></div>
+
+    <div id="auth-requirement-screen" style="display:none; text-align:center; padding:10rem 2rem;">
+        <div style="font-size:5rem; margin-bottom:2rem; filter:drop-shadow(0 10px 20px rgba(230, 57, 70, 0.2));">🔒
+        </div>
+        <h1 class="co-title">Login Required</h1>
+        <p class="co-subtitle">Please sign in to your JustCook account to securely place your order and track its
+            progress.</p>
+        <div style="display:flex; gap:1.5rem; justify-content:center; margin-top:2rem;">
+            <a href="#/login" class="co-btn" style="max-width:200px;">Sign In Now</a>
+            <a href="#/products" class="co-btn co-btn-secondary" style="max-width:200px;">Back to Shop</a>
+        </div>
+    </div>
+
+    <div id="checkout-main-content">
+        <h1 class="co-title" data-aos="zoom-out">Secure Checkout</h1>
+        <p class="co-subtitle" data-aos="fade-up" data-aos-delay="100">Almost there! Just a few details to get your
+            flavors moving.</p>
+
+        <!-- Stepper -->
+        <div class="co-stepper" data-aos="fade-up" data-aos-delay="200">
+            <div class="co-step-item active" id="s1">
+                <div class="co-step-dot">1</div>
+                <div class="co-step-label">Contact</div>
+                <div class="co-step-line"></div>
+            </div>
+            <div class="co-step-item" id="s2">
+                <div class="co-step-dot">2</div>
+                <div class="co-step-label">Shipping</div>
+                <div class="co-step-line"></div>
+            </div>
+            <div class="co-step-item" id="s3">
+                <div class="co-step-dot">3</div>
+                <div class="co-step-label">Payment</div>
+            </div>
+        </div>
+
+        <div class="co-grid">
+            <!-- LEFT: Forms -->
+            <div class="co-panels">
+
+                <!-- Step 1 -->
+                <div class="co-panel active" id="cp1">
+                    <div class="co-card">
+                        <h2>Personal Details</h2>
+                        <div class="co-group">
+                            <label class="co-label">Full Name</label>
+                            <input type="text" class="co-input" id="co-name" placeholder="John Doe">
+                        </div>
+                        <div class="co-row">
+                            <div class="co-group">
+                                <label class="co-label">Email Address</label>
+                                <input type="email" class="co-input" id="co-email-input" placeholder="john@example.com">
+                            </div>
+                            <div class="co-group">
+                                <label class="co-label">Mobile Number</label>
+                                <input type="tel" class="co-input" id="co-phone" placeholder="9876543210"
+                                    maxlength="10">
+                            </div>
+                        </div>
+                        <button class="co-btn" id="btn-next-1">Continue to Shipping <span>→</span></button>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="co-panel" id="cp2">
+                    <div class="co-card">
+                        <h2> Shipping Address</h2>
+                        <div class="co-group">
+                            <label class="co-label">Street Address</label>
+                            <textarea class="co-input" id="co-address" rows="3"
+                                placeholder="Apartment, Street, Area"></textarea>
+                        </div>
+                        <div class="co-row">
+                            <div class="co-group">
+                                <label class="co-label">City</label>
+                                <input type="text" class="co-input" id="co-city" placeholder="Chennai">
+                            </div>
+                            <div class="co-group">
+                                <label class="co-label">PIN Code</label>
+                                <input type="tel" class="co-input" id="co-pin" placeholder="600001" maxlength="6">
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:1.5rem;margin-top:1rem;">
+                            <button class="co-btn co-btn-secondary" id="btn-back-1">Back</button>
+                            <button class="co-btn" id="btn-next-2">Continue to Payment <span>→</span></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="co-panel" id="cp3">
+                    <div class="co-card">
+                        <h2> Secure Payment</h2>
+
+                        <div
+                            style="background:rgba(79,70,229,0.06); border:1px solid rgba(79,70,229,0.2); border-radius:24px; padding:1.5rem; margin-bottom:2rem; text-align:center;">
+                            <p style="font-weight:800; font-size:0.95rem; color:var(--primary);"> Razorpay Secure Checkout</p>
+                            <p style="font-size:0.8rem; opacity:0.6; margin-top:0.4rem;">Cards, UPI, Netbanking & Wallets</p>
+                        </div>
+
+                        <!-- Order Amount Display -->
+                        <div
+                            style="text-align:center; padding:2rem; background:var(--bg); border:1px solid var(--border); border-radius:32px; margin-bottom:2.5rem; position:relative; overflow:hidden;">
+                            <div
+                                style="position:absolute; top:0; left:0; width:100%; height:4px; background:linear-gradient(90deg, var(--primary), #6366f1);">
+                            </div>
+                            <div
+                                style="font-size:0.75rem; font-weight:800; text-transform:uppercase; opacity:0.5; letter-spacing:2px;">
+                                Total Payable</div>
+                            <div id="rzp-amount-display"
+                                style="font-size:3.5rem; font-weight:900; color:var(--text); margin-top:0.5rem; letter-spacing:-1px;">
+                                ₹0.00</div>
+                        </div>
+
+                        <div style="display:flex; flex-direction:column; gap:1rem;">
+                            <button class="co-btn" onclick="initRazorpay('card')" id="btn-card-order" style="background:#2563eb; width:100%;">
+                                💳 Pay with Credit / Debit Card
+                            </button>
+                            <button class="co-btn" onclick="initRazorpay()" id="btn-place-order" style="width:100%;">
+                                📱 Pay with UPI or Netbanking
+                            </button>
+                            <button class="co-btn co-btn-secondary" id="btn-back-2" style="width:100%;">Back</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT: Summary -->
+            <aside class="co-sidebar" data-aos="fade-left" data-aos-delay="400">
+                <h3>Order Summary</h3>
+                <div id="co-summary-items"></div>
+                <div class="co-line"></div>
+                <div class="co-total-box">
+                    <div class="co-row-t"><span>Subtotal</span><span id="co-subtotal">—</span></div>
+                    <div class="co-row-t"><span>Delivery</span><span id="co-shipping">—</span></div>
+                    <div class="co-row-t big"><span>Total</span><span id="co-total">—</span></div>
+                </div>
+                <a href="#/cart"
+                    style="display:block; text-align:center; margin-top:1.5rem; font-size:0.85rem; opacity:0.5; text-decoration:none; font-weight:600;">←
+                    Back to Cart</a>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        (function checkoutFlow() {
+            const root = document.getElementById('co-root');
+            const Store = window.Store;
+            const DB = window.Database;
+
+            if (!Store) return;
+
+            // ── Authentication Check ────────────────────────────────────
+            // Removed to allow guest checkout
+            // const currentUser = Store.getState().user;
+            // if (!currentUser) {
+            //     document.getElementById('auth-requirement-screen').style.display = 'block';
+            //     document.getElementById('checkout-main-content').style.display = 'none';
+            //     return;
+            // }
+
+            // ── Get cart & normalize ALL data upfront ─────────────────
+            const rawCart = Store.getState().cart || [];
+
+            // Safety normalize: force price/qty to numbers
+            const safeCart = rawCart.map(i => ({
+                productId: i.productId || i.id || '',
+                variantId: i.variantId || i.id || '',
+                name: i.name || 'Product',
+                price: Number(i.price) || 0,
+                qty: Number(i.qty) || 1,
+                imageUrl: i.imageUrl || 'images/logo.png',
+                category: i.category || ''
+            }));
+
+            if (safeCart.length === 0) {
+                root.innerHTML = '<div style="text-align:center;padding:10rem 2rem;">'
+                    + '<div style="font-size:6rem;margin-bottom:2rem;filter:grayscale(1);opacity:0.3;">🛒</div>'
+                    + '<h1 class="jc-big-title">Your cart is empty</h1>'
+                    + '<p style="opacity:0.6;margin-bottom:3rem;">Looks like you haven\'t picked your flavors yet.</p>'
+                    + '<button onclick="window.location.hash=\'#/products\'" class="btn">Explore Products</button>'
+                    + '</div>';
+                return;
+            }
+
+            // Pre-fill from active user or saved customer
+            try {
+                const currentUser = Store.getState().user;
+                const saved = DB ? DB.getSavedCustomer() : null;
+
+                if (currentUser) {
+                    document.getElementById('co-name').value = currentUser.name || '';
+                    document.getElementById('co-email-input').value = currentUser.email || '';
+                } else if (saved) {
+                    if (saved.name) document.getElementById('co-name').value = saved.name;
+                    if (saved.email) document.getElementById('co-email-input').value = saved.email;
+                    if (saved.phone) document.getElementById('co-phone').value = saved.phone;
+                    if (saved.address) document.getElementById('co-address').value = saved.address;
+                    if (saved.city) document.getElementById('co-city').value = saved.city;
+                    if (saved.pincode) document.getElementById('co-pin').value = saved.pincode;
+                }
+            } catch (e) { }
+
+            // ── Summary ───────────────────────────────────────────────
+            const totals = Store.getCartTotals();
+            const subtotal = totals.subtotal;
+            const delivery = totals.delivery;
+            const total = totals.total;
+
+            document.getElementById('co-subtotal').textContent = '₹' + subtotal.toFixed(2);
+            document.getElementById('co-total').textContent = '₹' + total.toFixed(2);
+
+            // Update Delivery text in sidebar
+            const deliveryEl = document.getElementById('co-shipping');
+            if (deliveryEl) {
+                deliveryEl.textContent = '₹' + delivery.toFixed(2);
+            }
+
+            let summaryHtml = '';
+            safeCart.forEach(i => {
+                summaryHtml += '<div class="co-sum-item">'
+                    + '<img class="co-sum-img" src="' + i.imageUrl + '" alt="' + i.name + '" onerror="this.src=\'images/logo.png\'">'
+                    + '<div class="co-sum-info"><b>' + i.name + '</b><p>' + i.qty + ' × ₹' + i.price.toFixed(2) + '</p></div>'
+                    + '<span class="co-sum-price">₹' + (i.price * i.qty).toFixed(2) + '</span>'
+                    + '</div>';
+            });
+            document.getElementById('co-summary-items').innerHTML = summaryHtml;
+
+            // Step logic
+            function goStep(n) {
+                const panels = document.querySelectorAll('.co-panel');
+                const items = document.querySelectorAll('.co-step-item');
+                const next = document.getElementById('cp' + n);
+
+                if (window.gsap) {
+                    const current = document.querySelector('.co-panel.active');
+
+                    gsap.to(current, {
+                        opacity: 0,
+                        x: -50,
+                        scale: 0.95,
+                        duration: 0.4,
+                        ease: 'power2.in',
+                        onComplete: () => {
+                            panels.forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+                            next.style.display = 'block';
+                            next.classList.add('active');
+                            gsap.fromTo(next,
+                                { opacity: 0, x: 50, scale: 1.05 },
+                                { opacity: 1, x: 0, scale: 1, duration: 0.5, ease: 'power3.out' }
+                            );
+                        }
+                    });
+                } else {
+                    panels.forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+                    next.style.display = 'block';
+                    next.classList.add('active');
+                }
+
+                items.forEach((item, i) => {
+                    item.classList.remove('active', 'done');
+                    if (i + 1 < n) item.classList.add('done');
+                    else if (i + 1 === n) item.classList.add('active');
+                });
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Nav
+            document.getElementById('btn-next-1').addEventListener('click', () => {
+                const name = document.getElementById('co-name').value.trim();
+                const email = document.getElementById('co-email-input').value.trim();
+                const phone = document.getElementById('co-phone').value.trim();
+
+                if (!name) return alert('Please enter your Full Name.');
+                if (!email || !email.includes('@')) return alert('Please enter a valid Email Address.');
+                if (phone.length < 10) return alert('Please enter a valid 10-digit Mobile Number.');
+
+                goStep(2);
+            });
+
+            document.getElementById('btn-back-1').addEventListener('click', () => goStep(1));
+
+            document.getElementById('btn-next-2').addEventListener('click', () => {
+                const addr = document.getElementById('co-address').value.trim();
+                const city = document.getElementById('co-city').value.trim();
+                const pin = document.getElementById('co-pin').value.trim();
+
+                if (!addr) return alert('Please enter your Shipping Address.');
+                if (!city) return alert('Please enter your City.');
+                if (pin.length < 6) return alert('Please enter a valid 6-digit PIN Code.');
+
+                goStep(3);
+                setupUpi();
+            });
+
+            document.getElementById('btn-back-2').addEventListener('click', () => goStep(2));
+
+            // ── Razorpay Integration ──────────────────────────────────────
+            window.initRazorpay = (preferredMethod) => {
+                const totals = Store.getCartTotals();
+                const amountInPaise = Math.round(totals.total * 100);
+                const customer = getCustomer();
+
+                const btn1 = document.getElementById('btn-place-order');
+                const btn2 = document.getElementById('btn-card-order');
+                
+                if (btn1) btn1.disabled = true;
+                if (btn2) { btn2.disabled = true; btn2.innerHTML = 'Processing...'; }
+                if (btn1 && !preferredMethod) btn1.innerHTML = 'Processing...';
+
+                function resetButtons() {
+                    if (btn1) { btn1.disabled = false; btn1.innerHTML = '📱 Pay with UPI or Netbanking'; }
+                    if (btn2) { btn2.disabled = false; btn2.innerHTML = '💳 Pay with Credit / Debit Card'; }
+                }
+
+                // Client-Side Razorpay Checkout (Without Order API)
+                const options = {
+                    "key": "rzp_live_SvYy46yyInMuhO", // Live key provided by user
+                    "amount": amountInPaise,
+                    "currency": "INR",
+                    "name": "JustCook",
+                    "description": "Flavor Revolution Order",
+                    "image": "images/logo.png",
+                    "handler": function (response) {
+                        // Success callback
+                        if (window.showToast) window.showToast('Payment Successful!', 'ok');
+                        finalizeOrder(response.razorpay_payment_id, 'Razorpay (Card/UPI)', totals.total);
+                    },
+                    "prefill": {
+                        "name": customer.name,
+                        "email": customer.email,
+                        "contact": customer.phone
+                    },
+                    "theme": {
+                        "color": "#E63946" // JustCook Primary Color
+                    },
+                    "modal": {
+                        "ondismiss": function() {
+                            resetButtons();
+                            if (window.showToast) window.showToast('Payment window closed.', 'err');
+                        }
+                    }
+                };
+                
+                // If the user clicked the specific Card button, open directly to Card tab
+                if (preferredMethod) {
+                    options.prefill.method = preferredMethod;
+                }
+
+                try {
+                    const rzp = new window.Razorpay(options);
+                    rzp.on('payment.failed', function (response){
+                        resetButtons();
+                        alert('Payment Failed: ' + response.error.description);
+                    });
+                    rzp.open();
+                } catch (e) {
+                    resetButtons();
+                    alert('Razorpay SDK failed to load. Please check your internet connection or ensure you placed the script tag.');
+                    console.error(e);
+                }
+            };
+
+            window.setupUpi = () => {
+                // Initialize display on step 3 for Razorpay
+                const totals = Store.getCartTotals();
+                const amtDisplay = document.getElementById('rzp-amount-display');
+                if (amtDisplay) amtDisplay.textContent = '₹' + totals.total.toFixed(2);
+            };
+
+            function getCustomer() {
+                return {
+                    name: document.getElementById('co-name').value,
+                    phone: document.getElementById('co-phone').value,
+                    email: document.getElementById('co-email-input').value,
+                    address: document.getElementById('co-address').value,
+                    city: document.getElementById('co-city').value,
+                    state: 'Tamil Nadu',
+                    pincode: document.getElementById('co-pin').value
+                };
+            }
+
+            function finalizeOrder(paymentId, method, paidTotal) {
+                const customer = getCustomer();
+                DB.placeOrder({
+                    customer,
+                    items: safeCart,
+                    total: paidTotal || totals.total,
+                    paymentMethod: method,
+                    paymentId: paymentId
+                }).then(res => {
+                    if (res.success) {
+                        Store.clearCart();
+                        showSuccess(res.orderId, customer.name);
+                    }
+                });
+            }
+
+            function showSuccess(id, name) {
+                root.innerHTML = '<div class="co-success-card" data-aos="zoom-in">'
+                    + '<div class="success-icon-wrap">✓</div>'
+                    + '<h1 class="jc-big-title">Flavor Revolution Started! 🚀</h1>'
+                    + '<p style="font-size:1.2rem; opacity:0.6; margin-bottom:2rem;">Thank you <b>' + name + '</b>! Your order <b>#' + id + '</b> is being prepared with love.</p>'
+                    + '<div style="display:flex; gap:1.5rem; justify-content:center; flex-wrap:wrap;">'
+                    + '<a href="https://wa.me/919840462831?text=Hi, I just paid for Order %23' + id + '. Please verify my address." target="_blank" class="btn" style="background:#25d366; color:white;">Verify Address on WhatsApp</a>'
+                    + '<a href="#/" class="btn btn-secondary">Back to Home</a>'
+                    + '<a href="#/tracker" class="btn btn-secondary">Track Order</a>'
+                    + '</div>'
+                    + '</div>';
+            }
+
+            // GSAP initialization
+            if (window.gsap) {
+                gsap.from('.co-blob', { opacity: 0, scale: 0.2, duration: 2.5, stagger: 0.4, ease: 'power2.out' });
+                gsap.from('.co-card', { opacity: 0, y: 100, duration: 1, delay: 0.3, ease: 'power4.out' });
+            }
+        })();
+    </script>

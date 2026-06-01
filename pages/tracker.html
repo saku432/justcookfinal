@@ -1,0 +1,272 @@
+<style>
+/* ===== Tracker Page ===== */
+.tracker-page { padding: 6rem 0 10rem; max-width: 600px; margin: 0 auto; min-height: 80vh; position: relative; }
+.tracker-title { font-size: clamp(2.5rem, 5vw, 3.5rem); font-weight: 900; margin-bottom: 1rem; text-align: center; letter-spacing: -0.03em; }
+.tracker-subtitle { text-align: center; opacity: 0.5; margin-bottom: 4rem; }
+
+/* Floating background blobs */
+.tk-blob {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(80px);
+    opacity: 0.12;
+    z-index: -1;
+}
+.tk-blob-1 { width: 400px; height: 400px; top: -100px; left: -200px; background: var(--primary); }
+.tk-blob-2 { width: 300px; height: 300px; bottom: 0; right: -150px; background: #6366f1; }
+
+.tracker-card {
+    background: var(--card);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 32px;
+    padding: 3.5rem;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.06);
+}
+
+.form-group { margin-bottom: 1.5rem; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: 600; opacity: 0.7; margin-bottom: 0.5rem; }
+.form-input {
+    width: 100%; padding: 1rem 1.2rem;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 12px; color: var(--text);
+    font-size: 1rem; font-family: inherit;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box;
+}
+.form-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(255,90,95,0.15); }
+
+.btn-primary-tk {
+    width: 100%; background: var(--primary); color: #fff;
+    border: none; border-radius: 99px;
+    padding: 1rem 2rem; font-size: 1.05rem; font-weight: 700;
+    cursor: pointer; transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 5px 20px rgba(255,90,95,0.4);
+    margin-top: 1rem;
+}
+.btn-primary-tk:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(255,90,95,0.6); }
+
+/* Error Message */
+.error-msg {
+    display: none;
+    background: rgba(239,68,68,0.1); color: #ef4444;
+    padding: 1rem; border-radius: 12px;
+    margin-top: 1.5rem; text-align: center; font-weight: 600; font-size: 0.9rem;
+}
+
+/* Result Area */
+.tracker-result {
+    display: none;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+
+.order-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.order-id-disp { font-size: 1.2rem; font-weight: 800; }
+.order-status-badge {
+    padding: 0.4rem 1rem; border-radius: 99px;
+    font-size: 0.85rem; font-weight: 700;
+}
+.status-Confirmed { background: rgba(99,102,241,0.15); color: #6366f1; }
+.status-Processing { background: rgba(250,204,21,0.15); color: #eab308; }
+.status-Delivered { background: rgba(34,197,94,0.15); color: #22c55e; }
+.status-Cancelled { background: rgba(239,68,68,0.15); color: #ef4444; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 2rem; margin-top: 1.5rem; }
+.timeline::before {
+    content: ''; position: absolute; left: 7px; top: 0; bottom: 0;
+    width: 2px; background: var(--border);
+}
+.tl-item { position: relative; margin-bottom: 1.5rem; }
+.tl-item:last-child { margin-bottom: 0; }
+.tl-dot {
+    position: absolute; left: -2rem; top: 0.2rem;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--bg); border: 3px solid var(--border);
+    z-index: 1;
+}
+.tl-item.active .tl-dot { border-color: var(--primary); background: var(--primary); box-shadow: 0 0 0 4px rgba(255,90,95,0.2); }
+.tl-item.done .tl-dot { border-color: #16a34a; background: #16a34a; }
+.tl-content { padding-left: 0.5rem; }
+.tl-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.2rem; }
+.tl-time { font-size: 0.8rem; opacity: 0.5; }
+
+.order-details { margin-top: 2rem; background: var(--bg); padding: 1.5rem; border-radius: 16px; font-size: 0.9rem; line-height: 1.6; }
+</style>
+
+<div class="tracker-page container">
+    <div class="tk-blob tk-blob-1"></div>
+    <div class="tk-blob tk-blob-2"></div>
+    <h1 class="tracker-title" data-aos="zoom-out">Track Your Order</h1>
+    <p class="tracker-subtitle" data-aos="fade-up" data-aos-delay="100">Enter your Order ID or Phone Number to check the status</p>
+
+    <div class="tracker-card">
+        <form id="track-form" onsubmit="return false;">
+            <div class="form-group">
+                <label>Order ID or Phone Number</label>
+                <input type="text" id="track-input" class="form-input" placeholder="e.g. JC1234XYZ or 9876543210" required>
+            </div>
+            <button type="submit" class="btn-primary-tk" id="btn-track">Track Order</button>
+        </form>
+
+        <div class="error-msg" id="track-error"></div>
+
+        <div class="tracker-result" id="track-result">
+            <div class="order-header">
+                <div class="order-id-disp">Order <span id="res-id"></span></div>
+                <div class="order-status-badge" id="res-status"></div>
+            </div>
+
+            <h3 style="font-size: 1.1rem; margin-bottom: 1rem;">Tracking History</h3>
+            <div class="timeline" id="res-timeline">
+                <!-- Injected via JS -->
+            </div>
+
+            <div class="order-details" id="res-details">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function initTracker() {
+    var form = document.getElementById('track-form');
+    var input = document.getElementById('track-input');
+    var btn = document.getElementById('btn-track');
+    var errorBox = document.getElementById('track-error');
+    var resultBox = document.getElementById('track-result');
+
+    var resId = document.getElementById('res-id');
+    var resStatus = document.getElementById('res-status');
+    var resTimeline = document.getElementById('res-timeline');
+    var resDetails = document.getElementById('res-details');
+
+    // Support deep-linking via ?id=
+    const hashParts = window.location.hash.split('?');
+    const urlParams = new URLSearchParams(hashParts.length > 1 ? hashParts[1] : '');
+    const orderIdParam = urlParams.get('id');
+    if (orderIdParam) {
+        input.value = orderIdParam;
+        setTimeout(() => performTrack(orderIdParam), 100);
+    }
+
+    form.addEventListener('submit', function() {
+        var query = input.value.trim();
+        if (!query) return;
+        performTrack(query);
+    });
+
+    function performTrack(query) {
+        errorBox.style.display = 'none';
+        resultBox.style.display = 'none';
+        btn.textContent = 'Searching...';
+        btn.disabled = true;
+
+        setTimeout(function() {
+            var DB = window.Database;
+            var isPhone = /^\d{10}$/.test(query);
+
+            if (isPhone) {
+                // If phone, just get the latest order once (realtime by phone is harder because they might have multiple)
+                DB.getOrdersByPhone(query).then(function(res) {
+                    btn.textContent = 'Track Order';
+                    btn.disabled = false;
+                    var order = res && res.length > 0 ? res[0] : null;
+                    if (!order) {
+                        errorBox.textContent = 'Order not found for this phone number.';
+                        errorBox.style.display = 'block';
+                        return;
+                    }
+                    showOrder(order);
+                });
+            } else {
+                // Subscribe to realtime updates for a single order
+                if (window._trackerUnsub) window._trackerUnsub(); // unsubscribe previous if any
+                
+                window._trackerUnsub = DB.subscribeToSingleOrder(query.toUpperCase(), function(order) {
+                    btn.textContent = 'Track Order';
+                    btn.disabled = false;
+                    
+                    if (!order) {
+                        errorBox.textContent = 'Order not found. Please check your ID and try again.';
+                        errorBox.style.display = 'block';
+                        resultBox.style.display = 'none';
+                        return;
+                    }
+                    showOrder(order);
+                });
+            }
+        }, 600); // simulate network delay
+    }
+
+    function showOrder(order) {
+        resId.textContent = order.id;
+        
+        var s = order.status || 'Confirmed';
+        resStatus.textContent = s;
+        resStatus.className = 'order-status-badge status-' + s.replace(/\s+/g, '');
+
+        // Render timeline
+        var history = order.statusHistory || [{ status: 'Order Placed', time: order.createdAt }];
+        var html = '';
+        var steps = ['Order Placed', 'Confirmed', 'Processing', 'Out for Delivery', 'Delivered'];
+        
+        // Find current step index
+        var currentStatus = s;
+        if (s === 'Pending') currentStatus = 'Order Placed';
+        
+        var currentIndex = steps.indexOf(currentStatus);
+        if (currentIndex === -1) currentIndex = 0; // Default fallback
+        if (s === 'Cancelled') steps = ['Order Placed', 'Cancelled'];
+
+        steps.forEach(function(stepName, i) {
+            var cls = '';
+            var timeStr = 'Pending...';
+            
+            // Find if this step is in history
+            var histItem = history.find(function(h) { return h.status === stepName || (stepName === 'Order Placed' && h.status === 'Order Placed'); });
+            
+            if (histItem) {
+                var d = new Date(histItem.time);
+                timeStr = d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                cls = i === history.length - 1 ? 'active' : 'done';
+            } else if (i <= currentIndex) {
+                cls = 'done'; // assumed done if current index is past it
+            }
+
+            if (s === 'Cancelled' && stepName === 'Cancelled') cls = 'active';
+
+            html += '<div class="tl-item ' + cls + '">'
+                 + '<div class="tl-dot"></div>'
+                 + '<div class="tl-content">'
+                 + '<div class="tl-title">' + stepName + '</div>'
+                 + '<div class="tl-time">' + timeStr + '</div>'
+                 + '</div>'
+                 + '</div>';
+        });
+        
+        resTimeline.innerHTML = html;
+
+        // Render details
+        var itemsHtml = order.items.map(function(item) {
+            return '<li>' + item.qty + 'x ' + item.name + ' - ₹' + (item.price * item.qty).toFixed(2) + '</li>';
+        }).join('');
+
+        resDetails.innerHTML = '<strong>Delivery Address:</strong><br>'
+            + order.customer.name + '<br>'
+            + order.customer.address + ', ' + order.customer.city + ' - ' + order.customer.pincode + '<br><br>'
+            + '<strong>Items:</strong><ul style="margin-top:0.5rem; padding-left:1.2rem;">' + itemsHtml + '</ul><br>'
+            + '<strong>Total Amount:</strong> ₹' + order.total.toFixed(2) + ' (' + (order.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Prepaid') + ')';
+
+        resultBox.style.display = 'block';
+
+        if (window.gsap) {
+            gsap.from(resultBox, { opacity: 0, y: 20, duration: 0.5 });
+        }
+    }
+})();
+</script>

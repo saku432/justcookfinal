@@ -1,0 +1,985 @@
+
+    <style>
+        :root {
+            --primary: #e63946;
+            --primary-hover: #d62828;
+            --dark: #1d3557;
+            --darker: #f1faee;
+            --light: #ffffff;
+            --gray: #e5e5e5;
+            --text: #2b2b2b;
+            --text-light: #666666;
+            --gold: #f4a261;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: transparent;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, .logo, .display {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+        }
+        
+        .logo { font-size: 3rem; }
+        h1 { font-size: 6rem; }
+        h2 { font-size: 4rem; }
+        h3 { font-size: 2.5rem; }
+
+        /* Navbar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(17, 17, 17, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            color: var(--gold);
+            font-size: 2rem;
+            text-decoration: none;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-icons a {
+            color: white;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+
+        .nav-icons a:hover {
+            color: var(--primary);
+        }
+
+        /* Full-Screen Smooth Slider Hero */
+        .hero {
+            height: 100vh;
+            background-color: #000;
+            position: relative;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Important for <img> tags */
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            z-index: 1;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+            z-index: 2;
+            animation: smoothKenBurns 12s ease-in-out infinite alternate;
+        }
+
+        @keyframes smoothKenBurns {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Left-side vignette for text contrast + bottom blend */
+            background: linear-gradient(to right, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 50%),
+                        linear-gradient(to bottom, rgba(0,0,0,0) 70%, var(--light) 100%);
+            z-index: 3;
+            pointer-events: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 15%;
+            left: 5%;
+            z-index: 10;
+            text-align: left;
+            color: white;
+            width: 40%;
+            min-width: 320px;
+            animation: heroContentSlideIn 1.2s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes heroContentSlideIn {
+            0% { opacity: 0; transform: translateX(-30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.2rem, 6vw, 4rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            text-shadow: 0 5px 30px rgba(0,0,0,0.8);
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: clamp(0.95rem, 2vw, 1.2rem);
+            margin-bottom: 3rem;
+            opacity: 1;
+            max-width: 550px;
+            margin-left: 0;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-start;
+        }
+
+        .hero .btn {
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            border-radius: 4px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-radius: 4px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(227, 79, 24, 0.3);
+            color: white;
+        }
+
+        .btn:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid white;
+            margin-left: 1rem;
+        }
+
+        .btn-outline:hover {
+            background-color: white;
+            color: var(--dark);
+        }
+
+        /* Magnetic Button Effect (requires JS but CSS base) */
+        .magnetic-wrap {
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        /* Products Section */
+        .section {
+            padding: 6rem 5%;
+            background-color: var(--light);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-img-wrapper {
+            position: relative;
+            height: 350px;
+            overflow: hidden;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .product-card:hover .product-img {
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .product-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .product-desc {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: block;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 0.8rem;
+            background: white;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-to-cart:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Features Section */
+        .features {
+            background-color: var(--dark);
+            color: white;
+            padding: 5rem 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-desc {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--darker);
+            color: white;
+            padding: 4rem 5% 2rem;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .social-links {
+            margin: 2rem 0;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 2rem;
+            border-top: 1px solid #222;
+            padding-top: 2rem;
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 8rem 5%;
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+            background-color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spice-particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .spice-particle {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.1;
+            filter: blur(1px);
+            animation: particleFloat 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(40px, 40px) rotate(45deg); }
+        }
+
+        .about-content {
+            flex: 1;
+        }
+
+        .about-title {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .about-text {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .layered-image-stack {
+            flex: 1;
+            position: relative;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+            z-index: 1;
+        }
+
+        .stack-img {
+            position: absolute;
+            width: 280px;
+            height: 380px;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 4px solid white;
+        }
+
+        .stack-img-1 {
+            z-index: 3;
+            transform: translateX(-40px) rotate(-5deg);
+        }
+
+        .stack-img-2 {
+            z-index: 2;
+            transform: translateX(20px) translateY(-30px) rotate(3deg);
+            width: 300px;
+            height: 400px;
+        }
+
+        .stack-img-3 {
+            z-index: 1;
+            transform: translateX(80px) translateY(40px) rotate(10deg);
+            opacity: 0.8;
+        }
+
+        .layered-image-stack:hover .stack-img-1 { transform: translateX(-100px) translateY(-20px) rotate(-8deg); }
+        .layered-image-stack:hover .stack-img-2 { transform: translateY(-50px) rotate(0deg); }
+        .layered-image-stack:hover .stack-img-3 { transform: translateX(120px) translateY(60px) rotate(15deg); }
+
+        .stack-img:hover {
+            z-index: 10;
+            transform: scale(1.1) rotate(0deg) !important;
+            box-shadow: 0 30px 60px rgba(227, 79, 24, 0.4);
+            border-color: var(--primary);
+        }
+
+        /* Newsletter Section */
+        .newsletter {
+            padding: 6rem 5%;
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+        }
+
+        .newsletter h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .newsletter p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .newsletter-form {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .newsletter-btn {
+            padding: 1rem 2rem;
+            background-color: var(--dark);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .newsletter-btn:hover {
+            background-color: black;
+        }
+
+        /* Recipe Guide */
+        .recipe-guide {
+            padding: 6rem 5%;
+            background-color: var(--darker);
+            text-align: center;
+        }
+
+        .recipe-steps {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 250px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .step-number {
+            font-family: var(--fancy);
+            font-size: 3.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: 6rem 5%;
+            background-color: var(--light);
+            text-align: center;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            font-style: italic;
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            font-family: var(--fancy);
+            font-size: 4rem;
+            color: var(--primary);
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            opacity: 0.2;
+        }
+
+        .client-name {
+            display: block;
+            margin-top: 1rem;
+            font-weight: bold;
+            font-style: normal;
+            color: var(--primary);
+        }
+
+        /* Floating Background Animation */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+            background-color: var(--dark);
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1506368249639-73a05d6f6488?auto=format&fit=crop&q=80&w=1920');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .floating-spice {
+            position: absolute;
+            mix-blend-mode: multiply;
+            opacity: 0.15;
+            animation: floatAndSpin 20s infinite linear;
+        }
+
+        @keyframes floatAndSpin {
+            0% { transform: translateY(110vh) rotate(0deg) scale(0.8); }
+            50% { transform: translateY(40vh) rotate(180deg) scale(1.1); }
+            100% { transform: translateY(-20vh) rotate(360deg) scale(0.8); }
+        }
+
+        .spice-1 { left: 10%; animation-duration: 25s; animation-delay: -5s; width: 120px; }
+        .spice-2 { left: 30%; animation-duration: 35s; animation-delay: -15s; width: 80px; }
+        .spice-3 { left: 50%; animation-duration: 20s; animation-delay: -2s; width: 150px; }
+        .spice-4 { left: 70%; animation-duration: 28s; animation-delay: -10s; width: 100px; }
+        .spice-5 { left: 85%; animation-duration: 22s; animation-delay: -8s; width: 130px; }
+
+        @media (max-width: 768px) {
+            .about-section {
+                flex-direction: column;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+        }
+    </style>
+
+
+    <!-- Background Animation Layer -->
+    <div class="animated-bg">
+        <img src="images/chili.png" class="floating-spice spice-1" alt="">
+        <img src="images/mint.png" class="floating-spice spice-2" alt="">
+        <img src="images/chili.png" class="floating-spice spice-3" alt="">
+        <img src="images/mint.png" class="floating-spice spice-4" alt="">
+        <img src="images/chili.png" class="floating-spice spice-5" alt="">
+    </div>
+
+    <!-- Full-Screen Smooth Slider Section -->
+    <section class="hero" id="home">
+        <div class="hero-overlay"></div>
+        <img src="images/dry-pickle-masala-min-scaled.jpg" class="hero-slide active" alt="Spice Mix">
+        <img src="images/garam-masala-spices-indian-curry-260nw-2521904937.webp" class="hero-slide" alt="Chili Powder">
+        <img src="images/images (4).jpg" class="hero-slide" alt="Spice Market">
+        <img src="images/images (5).jpg" class="hero-slide" alt="Assorted Spices">
+        
+        <div class="hero-content">
+            <h1 data-aos="fade-up">The Soul of Authentic Flavors</h1>
+            <p data-aos="fade-up" data-aos-delay="200">Experience the magic of hand-crafted masalas. Sourced from the finest farms to bring restaurant-quality taste to your home kitchen.</p>
+            <div class="hero-btns" data-aos="fade-up" data-aos-delay="400">
+                <a href="#/products" class="btn">Shop The Collection</a>
+                <a href="#about" class="btn btn-outline" style="color: white; border-color: white;">Our Story</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="section" id="shop">
+        <div class="section-header">
+            <h2 class="section-title">Signature Collections</h2>
+            <p class="section-subtitle">Discover our most loved blends, crafted meticulously for specific culinary
+                delights. Bring restaurant-quality taste right to your kitchen.</p>
+        </div>
+
+        <div class="product-grid">
+            <!-- Category 1: Panipuri -->
+            <div class="product-card" data-aos="fade-up" data-aos-delay="100">
+                <a href="#/products" style="text-decoration: none; color: inherit;">
+                    <div class="product-img-wrapper">
+                        <img src="images/pp-mint.jpg"
+                            onerror="this.src='https://images.unsplash.com/photo-1601050690597-df056fb04791?auto=format&fit=crop&q=80&w=800'"
+                            alt="Mint Pani Puri" class="product-img">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Pani Puri - 5 Flavors (1kg)</h3>
+                        <p class="product-desc">Mint, Garlic, Hajma, Jeera, and Tamarind. Authentic street-style experience in a 1kg value pack.</p>
+                        <span class="product-price">₹400.00</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Category 2: Fried Chicken -->
+            <div class="product-card" data-aos="fade-up" data-aos-delay="200">
+                <a href="#/product/fc-hot-spicy" style="text-decoration: none; color: inherit;">
+                    <div class="product-img-wrapper">
+                        <img src="images/Extra Hot And Spicy.jpg.jpeg"
+                            onerror="this.src='https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&q=80&w=800'"
+                            alt="Hot & Spicy Fried Chicken" class="product-img">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Crispy Fried Chicken (1kg)</h3>
+                        <p class="product-desc">Available in Hot & Spicy and Cajun flavors. Perfectly crunchy 1kg packs.</p>
+                        <span class="product-price">₹350.00</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Category 3: Waffles -->
+            <div class="product-card" data-aos="fade-up" data-aos-delay="300">
+                <a href="#/product/waffle-mix" style="text-decoration: none; color: inherit;">
+                    <div class="product-img-wrapper">
+                        <img src="images/Waffles Mix.jpg.jpeg"
+                            onerror="this.src='https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&q=80&w=800'"
+                            alt="Belgian Waffle Mix" class="product-img">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Belgian Waffles (1kg)</h3>
+                        <p class="product-desc">Light, airy, and golden-brown. Our premium 1kg mix makes every morning feel like a luxury brunch.</p>
+                        <span class="product-price">₹300.00</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 4rem;" data-aos="fade-up">
+            <a href="#/products" class="btn">Explore All Products</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="feature-box" data-aos="fade-up" data-aos-delay="100">
+            <i class="fas fa-leaf feature-icon"></i>
+            <h3 class="feature-title">100% Natural</h3>
+            <p class="feature-desc">No preservatives, no artificial colors. Just pure, authentic spices as nature
+                intended.</p>
+        </div>
+        <div class="feature-box" data-aos="fade-up" data-aos-delay="200">
+            <i class="fas fa-mortar-pestle feature-icon"></i>
+            <h3 class="feature-title">Hand-Ground</h3>
+            <p class="feature-desc">Crafted in small batches using traditional methods to preserve essential oils and
+                aromas.</p>
+        </div>
+        <div class="feature-box" data-aos="fade-up" data-aos-delay="300">
+            <i class="fas fa-globe-asia feature-icon"></i>
+            <h3 class="feature-title">Ethically Sourced</h3>
+            <p class="feature-desc">We partner directly with farmers to ensure fair trade and the highest quality
+                ingredients.</p>
+        </div>
+    </section>
+
+    <!-- About Section with Layered Stack -->
+    <section class="about-section" id="about">
+        <!-- Floating Spices Background -->
+        <div class="spice-particles">
+            <span class="spice-particle" style="top: 10%; left: 10%;">🌶️</span>
+            <span class="spice-particle" style="top: 80%; left: 20%; animation-delay: -2s;">🧇</span>
+            <span class="spice-particle" style="top: 30%; left: 80%; animation-delay: -5s;">🍗</span>
+            <span class="spice-particle" style="top: 70%; left: 90%; animation-delay: -7s;">🌿</span>
+            <span class="spice-particle" style="top: 20%; left: 50%; animation-delay: -3s;">🍋</span>
+        </div>
+
+        <div class="layered-image-stack jc-tilt-element" data-aos="fade-right">
+            <img src="images/Extra Hot And Spicy.jpg.jpeg" 
+                 onerror="this.src='https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&q=80&w=800'"
+                 alt="Hot & Spicy Fried Chicken" class="stack-img stack-img-1">
+            <img src="images/Cajun Breading Mix.jpg.jpeg" 
+                 onerror="this.src='https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&q=80&w=800'"
+                 alt="Cajun Fried Chicken" class="stack-img stack-img-2">
+            <img src="images/Waffles Mix.jpg.jpeg" 
+                 onerror="this.src='https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&q=80&w=800'"
+                 alt="Golden Waffles" class="stack-img stack-img-3">
+        </div>
+        <div class="about-content" data-aos="fade-left">
+            <h2 class="about-title gsap-reveal-text">Beyond Just Spices, It's a Flavor Revolution.</h2>
+            <p class="about-text">At JustCook, we've expanded our horizons. While our soul remains rooted in the perfect Pani Puri, we've journeyed into the worlds of crispy comfort and morning delights.</p>
+            <p class="about-text">From the fiery streets of India to the golden brunches of Europe, our master blenders ensure that every JustCook product delivers the same authentic, chef-quality experience in your own home.</p>
+            <a href="#/products" class="btn">Explore All Flavors</a>
+        </div>
+    </section>
+
+
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="reviews">
+        <h2 class="section-title" data-aos="fade-up">What Our Customers Say</h2>
+        <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Thousands of home chefs love the JustCook difference.</p>
+        <div class="testimonial-grid">
+            <div class="testimonial-card" data-aos="zoom-in" data-aos-delay="200">
+                "The Mint Pani Puri masala transported me straight back to the streets of Mumbai. Absolutely authentic and perfectly balanced!"
+                <span class="client-name">- Priya S.</span>
+            </div>
+            <div class="testimonial-card" data-aos="zoom-in" data-aos-delay="300">
+                "I've tried many spice blends, but the Spicy Garlic variant is on another level. It has the perfect kick without being overwhelming."
+                <span class="client-name">- Rahul M.</span>
+            </div>
+            <div class="testimonial-card" data-aos="zoom-in" data-aos-delay="400">
+                "The Hajma Hajam is a game changer for our family gatherings. Everyone keeps asking for my secret recipe. Thank you JustCook!"
+                <span class="client-name">- Anjali K.</span>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+    <script>
+        (function() {
+            const slides = document.querySelectorAll('.hero-slide');
+            let currentSlide = 0;
+
+            // Triple-Stage Fallback Strategy
+            const timestamp = Date.now();
+            const fallbacks = [
+                `https://images.unsplash.com/photo-1532336414038-cf19250c5757?auto=format&fit=crop&q=80&w=1920&t=${timestamp}`,
+                `https://images.unsplash.com/photo-1516714435131-44d6b64dc6a2?auto=format&fit=crop&q=80&w=1920&t=${timestamp}`,
+                `https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&q=80&w=1920&t=${timestamp}`,
+                `https://images.unsplash.com/photo-1564149504294-81cc97a92f8e?auto=format&fit=crop&q=80&w=1920&t=${timestamp}`
+            ];
+
+            const localPaths = [
+                'images/dry-pickle-masala-min-scaled.jpg',
+                'images/garam-masala-spices-indian-curry-260nw-2521904937.webp',
+                'images/images (4).jpg',
+                'images/images (5).jpg'
+            ];
+
+            slides.forEach((img, index) => {
+                const tryNext = (attempt) => {
+                    if (attempt === 0) {
+                        img.src = localPaths[index];
+                    } else if (attempt === 1) {
+                        img.src = `../${localPaths[index]}`;
+                    } else {
+                        img.src = fallbacks[index];
+                        img.onerror = null;
+                    }
+                };
+
+                let currentAttempt = 0;
+                img.onerror = () => tryNext(++currentAttempt);
+                tryNext(currentAttempt);
+            });
+
+            function nextSlide() {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }
+
+            // Change slide every 6 seconds
+            setInterval(nextSlide, 6000);
+            // 3D Tilt for About Stack
+            const tiltEl = document.querySelector('.jc-tilt-element');
+            if(tiltEl) {
+                document.addEventListener('mousemove', (e) => {
+                    const rect = tiltEl.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const rotateX = (y - centerY) / 10;
+                    const rotateY = (centerX - x) / 10;
+                    
+                    tiltEl.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                });
+                
+                tiltEl.addEventListener('mouseleave', () => {
+                    tiltEl.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
+                });
+            }
+
+            // GSAP Text Reveal
+            if(window.gsap && window.ScrollTrigger) {
+                const revealText = document.querySelector('.gsap-reveal-text');
+                if(revealText) {
+                    const text = revealText.innerText;
+                    revealText.innerHTML = text.split(' ').map(word => `<span style="display:inline-block; overflow:hidden;"><span style="display:inline-block; transform:translateY(100%); transition:transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);">${word}</span></span>`).join(' ');
+                    
+                    ScrollTrigger.create({
+                        trigger: revealText,
+                        start: 'top 80%',
+                        onEnter: () => {
+                            revealText.querySelectorAll('span span').forEach((span, i) => {
+                                setTimeout(() => {
+                                    span.style.transform = 'translateY(0)';
+                                }, i * 80);
+                            });
+                        }
+                    });
+                }
+            }
+
+            // Smooth reveal for about section images
+            if (window.gsap) {
+                gsap.registerPlugin(ScrollTrigger);
+                
+                gsap.from('.stack-img', {
+                    scrollTrigger: {
+                        trigger: '.layered-image-stack',
+                        start: 'top 80%',
+                    },
+                    x: 100,
+                    opacity: 0,
+                    stagger: 0.2,
+                    duration: 1,
+                    ease: 'power3.out'
+                });
+                
+                // Add magnetic effect to hero buttons
+                const heroBtns = document.querySelectorAll('.hero-btns .btn');
+                heroBtns.forEach(btn => {
+                    btn.addEventListener('mousemove', (e) => {
+                        const rect = btn.getBoundingClientRect();
+                        const x = e.clientX - rect.left - rect.width / 2;
+                        const y = e.clientY - rect.top - rect.height / 2;
+                        gsap.to(btn, { x: x * 0.3, y: y * 0.3, duration: 0.3 });
+                    });
+                    btn.addEventListener('mouseleave', () => {
+                        gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.3)' });
+                    });
+                });
+            }
+        })();
+    </script>

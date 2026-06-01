@@ -1,0 +1,331 @@
+<style>
+/* ============================================================
+   JustCook — Ultra-Premium Contact Suite
+   ============================================================ */
+
+:root {
+    --ct-primary: #ff5a5f;
+    --ct-dark: #0d1422;
+    --ct-card: rgba(255, 255, 255, 0.03);
+    --ct-border: rgba(255, 255, 255, 0.08);
+}
+
+.jc-contact-wrapper {
+    min-height: 100vh;
+    background: var(--ct-dark);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    padding: 8rem 2rem 4rem;
+}
+
+/* Dynamic background elements */
+.ct-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 90, 95, 0.15) 0%, transparent 70%);
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 1;
+}
+.ct-glow-1 { top: -200px; right: -100px; }
+.ct-glow-2 { bottom: -200px; left: -100px; background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%); }
+
+.jc-contact-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 6rem;
+    position: relative;
+    z-index: 10;
+    align-items: center;
+}
+
+/* Left Side: Content */
+.ct-content h1 {
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.05em;
+    margin-bottom: 2rem;
+    background: linear-gradient(to bottom, #fff, rgba(255,255,255,0.4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.ct-content p {
+    font-size: 1.2rem;
+    line-height: 1.7;
+    opacity: 0.6;
+    max-width: 500px;
+    margin-bottom: 4rem;
+}
+
+.ct-info-items {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.ct-info-card {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.ct-info-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--ct-border);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--ct-primary);
+    transition: all 0.3s;
+}
+
+.ct-info-card:hover .ct-info-icon {
+    background: var(--ct-primary);
+    color: #fff;
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 10px 30px rgba(255, 90, 95, 0.3);
+}
+
+.ct-info-text h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; opacity: 0.4; margin-bottom: 0.5rem; }
+.ct-info-text p { font-size: 1.1rem; font-weight: 700; opacity: 1; margin: 0; }
+.ct-info-text a { color: inherit; text-decoration: none; transition: color 0.3s; }
+.ct-info-text a:hover { color: var(--ct-primary); }
+
+/* Right Side: Floating Form */
+.ct-form-panel {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--ct-border);
+    border-radius: 48px;
+    padding: 4rem;
+    position: relative;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.4);
+}
+
+.ct-form-panel::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 48px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent, rgba(255,255,255,0.05));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+.ct-input-group {
+    margin-bottom: 2rem;
+}
+
+.ct-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--ct-primary);
+    margin-bottom: 1rem;
+    opacity: 0.8;
+}
+
+.ct-input {
+    width: 100%;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--ct-border);
+    border-radius: 20px;
+    padding: 1.2rem 1.5rem;
+    color: #fff;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s;
+    outline: none;
+}
+
+.ct-input:focus {
+    background: rgba(255,255,255,0.07);
+    border-color: var(--ct-primary);
+    box-shadow: 0 0 0 4px rgba(255, 90, 95, 0.1);
+}
+
+textarea.ct-input { min-height: 150px; resize: none; }
+
+.ct-submit-btn {
+    width: 100%;
+    padding: 1.3rem;
+    background: var(--ct-primary);
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.4s;
+    box-shadow: 0 15px 35px rgba(255, 90, 95, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.ct-submit-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(255, 90, 95, 0.5);
+    background: #ff6b70;
+}
+
+.ct-submit-btn i { font-size: 1.2rem; transition: transform 0.3s; }
+.ct-submit-btn:hover i { transform: translateX(5px); }
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .jc-contact-container { grid-template-columns: 1fr; gap: 4rem; text-align: center; }
+    .ct-content p { margin-left: auto; margin-right: auto; }
+    .ct-info-items { align-items: center; }
+    .ct-info-card { flex-direction: column; align-items: center; text-align: center; }
+    .ct-form-panel { padding: 3rem 2rem; }
+}
+
+@media (max-width: 600px) {
+    .jc-contact-wrapper { padding-top: 6rem; }
+    .ct-content h1 { font-size: 3.5rem; }
+}
+</style>
+
+<div class="jc-contact-wrapper">
+    <div class="ct-glow ct-glow-1"></div>
+    <div class="ct-glow ct-glow-2"></div>
+
+    <div class="jc-contact-container">
+        <!-- Left Side: Content -->
+        <div class="ct-content">
+            <h1 data-aos="fade-right">Let's start a <br><span>conversation.</span></h1>
+            <p data-aos="fade-right" data-aos-delay="200">
+                Have a question about our mixes or looking for a bulk partnership? 
+                Our team is ready to spice up your culinary journey.
+            </p>
+
+            <div class="ct-info-items">
+                <div class="ct-info-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="ct-info-icon"><i class="fas fa-phone-alt"></i></div>
+                    <div class="ct-info-text">
+                        <h4>Direct Line</h4>
+                        <p><a href="tel:+919840462831">+91 98404 62831</a></p>
+                    </div>
+                </div>
+                <div class="ct-info-card" data-aos="fade-up" data-aos-delay="500">
+                    <div class="ct-info-icon"><i class="fas fa-envelope"></i></div>
+                    <div class="ct-info-text">
+                        <h4>Email Support</h4>
+                        <p><a href="mailto:Justcook32@gmail.com">Justcook32@gmail.com</a></p>
+                    </div>
+                </div>
+                <div class="ct-info-card" data-aos="fade-up" data-aos-delay="600">
+                    <div class="ct-info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="ct-info-text">
+                        <h4>Our Kitchen</h4>
+                        <p>Elli sathiram Road, Sriram nagar, Villupuram 605602</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Form -->
+        <div class="ct-form-panel" data-aos="fade-left">
+            <form id="contactForm" action="https://formsubmit.co/Justcook32@gmail.com" method="POST">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_subject" value="New Inquiry from JustCook Web">
+
+                <div class="ct-input-group">
+                    <label class="ct-label">Your Name</label>
+                    <input type="text" name="name" class="ct-input" placeholder="Enter your full name" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div class="ct-input-group">
+                        <label class="ct-label">Email Address</label>
+                        <input type="email" name="email" class="ct-input" placeholder="hello@example.com" required>
+                    </div>
+                    <div class="ct-input-group">
+                        <label class="ct-label">Phone Number</label>
+                        <input type="tel" name="phone" class="ct-input" placeholder="+91" required>
+                    </div>
+                </div>
+
+                <div class="ct-input-group">
+                    <label class="ct-label">Your Message</label>
+                    <textarea name="message" class="ct-input" placeholder="How can we help you today?" required></textarea>
+                </div>
+
+                <button type="submit" class="ct-submit-btn">
+                    <span>Send Message</span>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+            <p id="formStatus" style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem; font-weight: 700; display: none;"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+(function initContact() {
+    const form = document.getElementById('contactForm');
+    const status = document.getElementById('formStatus');
+
+    if (form) {
+        form.addEventListener('submit', function() {
+            const btn = form.querySelector('button');
+            btn.disabled = true;
+            btn.innerHTML = '<span>Sending...</span> <i class="fas fa-spinner fa-spin"></i>';
+            status.style.display = 'block';
+            status.style.color = '#22c55e';
+            status.innerText = 'Redirecting to secure gateway...';
+        });
+    }
+
+    // Interactive Glow Following Cursor
+    const wrapper = document.querySelector('.jc-contact-wrapper');
+    const glow1 = document.querySelector('.ct-glow-1');
+    
+    wrapper.addEventListener('mousemove', (e) => {
+        const x = e.clientX;
+        const y = e.clientY;
+        
+        if(window.gsap) {
+            gsap.to(glow1, {
+                x: (x - window.innerWidth / 2) * 0.1,
+                y: (y - window.innerHeight / 2) * 0.1,
+                duration: 1,
+                ease: 'power2.out'
+            });
+        }
+    });
+
+    if (window.gsap) {
+        gsap.from('.ct-content span', {
+            duration: 1,
+            opacity: 0,
+            y: 50,
+            delay: 0.5,
+            ease: 'power4.out'
+        });
+    }
+})();
+</script>
+

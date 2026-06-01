@@ -1,0 +1,241 @@
+<style>
+/* ===== Cart Page ===== */
+.cart-page { padding: 4rem 0 6rem; }
+.cart-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    margin-bottom: 3rem;
+}
+.cart-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 3rem;
+    align-items: start;
+}
+@media(max-width:900px){ .cart-layout{ grid-template-columns:1fr; } }
+
+/* Items */
+.cart-items { display: flex; flex-direction: column; gap: 1.5rem; }
+.cart-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+    transition: border-color 0.3s;
+}
+@media(max-width: 600px) {
+    .cart-item {
+        grid-template-columns: 80px 1fr;
+        gap: 1rem;
+        padding: 1.2rem;
+    }
+    .cart-item__img { width: 80px; height: 80px; }
+    .cart-item__controls { 
+        grid-column: span 2; 
+        flex-direction: row; 
+        justify-content: space-between; 
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+    }
+    .cart-title { margin-bottom: 2rem; }
+    .cart-page { padding: 3rem 0 5rem; }
+}
+.cart-item:hover { border-color: var(--primary); }
+.cart-item__img {
+    width: 100px; height: 100px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--bg);
+    flex-shrink: 0;
+}
+.cart-item__img img { width:100%; height:100%; object-fit:cover; display:block; }
+.cart-item__info h3 { font-size:1.1rem; font-weight:700; margin-bottom:0.3rem; }
+.cart-item__info .cat { font-size:0.8rem; color:var(--primary); text-transform:uppercase; letter-spacing:1px; font-weight:600; }
+.cart-item__price { font-size:1.2rem; font-weight:700; color:var(--primary); margin-top:0.5rem; }
+
+.cart-item__controls { display:flex; flex-direction:column; align-items:flex-end; gap:1rem; }
+.qty-row { display:flex; align-items:center; background:var(--bg); border:1px solid var(--border); border-radius:99px; padding:0.2rem; }
+.cqty-btn {
+    width:36px; height:36px;
+    border:none; background:transparent; color:var(--text);
+    font-size:1.2rem; cursor:pointer; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    transition: background 0.2s;
+}
+.cqty-btn:hover { background:var(--border); }
+.cqty-num { width:40px; text-align:center; font-weight:700; font-size:1rem; }
+.remove-btn {
+    border:none; background:none; color:#ef4444;
+    font-size:0.85rem; font-weight:600; cursor:pointer;
+    opacity:0.7; transition:opacity 0.2s;
+}
+.remove-btn:hover { opacity:1; }
+
+/* Summary */
+.cart-summary {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 2rem;
+    position: sticky;
+    top: 100px;
+}
+.cart-summary h2 { font-size:1.4rem; font-weight:800; margin-bottom:1.5rem; }
+.summary-row {
+    display:flex; justify-content:space-between;
+    font-size:0.95rem; opacity:0.8; margin-bottom:0.8rem;
+}
+.summary-row.total {
+    font-size:1.3rem; font-weight:800; opacity:1;
+    border-top:1px solid var(--border); padding-top:1rem; margin-top:0.5rem;
+}
+.summary-row.total span:last-child { color:var(--primary); }
+
+.btn-checkout {
+    width:100%; margin-top:1.5rem;
+    background:var(--primary); color:#fff;
+    border:none; border-radius:99px;
+    font-size:1.05rem; font-weight:700;
+    padding:1rem; cursor:pointer;
+    transition:transform 0.3s, box-shadow 0.3s;
+    box-shadow:0 5px 20px rgba(255,90,95,0.4);
+}
+.btn-checkout:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(255,90,95,0.6); }
+.btn-checkout:disabled { background:var(--border); color:#888; cursor:not-allowed; transform:none; box-shadow:none; }
+
+.cart-empty {
+    text-align:center; padding:6rem 2rem;
+    display:flex; flex-direction:column; align-items:center; gap:1.5rem;
+}
+.cart-empty .icon { font-size:5rem; }
+.cart-empty h2 { font-size:1.8rem; font-weight:800; }
+.cart-empty p { opacity:0.6; }
+.btn-shop {
+    background:var(--primary); color:#fff;
+    border:none; border-radius:99px;
+    padding:0.9rem 2.5rem; font-weight:700; font-size:1rem;
+    cursor:pointer; text-decoration:none;
+    transition:transform 0.3s;
+}
+.btn-shop:hover { transform:translateY(-2px); }
+</style>
+
+<div class="cart-page container" id="cart-root">
+    <div style="min-height:50vh;display:flex;align-items:center;justify-content:center;">
+        <div class="spinner"></div>
+    </div>
+</div>
+
+<script>
+(function cartPage() {
+    var root  = document.getElementById('cart-root');
+    var Store = window.Store;
+    if (!root) return;
+
+    function getCart() {
+        return Store ? Store.getState().cart : [];
+    }
+
+    function render() {
+        var cart = getCart();
+        if (cart.length === 0) {
+            root.innerHTML =
+                '<h1 class="cart-title">Your Cart</h1>'
+              + '<div class="cart-empty">'
+              + '<div class="icon">🛒</div>'
+              + '<h2>Your cart is empty</h2>'
+              + '<p>Looks like you haven\'t added anything yet.</p>'
+              + '<a href="#/products" class="btn-shop">Browse Products</a>'
+              + '</div>';
+            return;
+        }
+
+        var totals   = Store.getCartTotals();
+        var subtotal = totals.subtotal;
+        var delivery = totals.delivery;
+        var total    = totals.total;
+
+        var itemsHtml = cart.map(function(item, idx) {
+            var img = item.imageUrl || 'images/logo.png';
+            return '<div class="cart-item" data-idx="' + idx + '">'
+                 + '<div class="cart-item__img"><img src="' + img + '" alt="' + item.name + '"></div>'
+                 + '<div class="cart-item__info">'
+                 + '<span class="cat">' + (item.category || 'JustCook') + '</span>'
+                 + '<h3>' + item.name + '</h3>'
+                 + '<div class="cart-item__price">₹' + (Number(item.price) * Number(item.qty)).toFixed(2) + '</div>'
+                 + '</div>'
+                 + '<div class="cart-item__controls">'
+                 + '<div class="qty-row">'
+                 + '<button class="cqty-btn" data-action="minus" data-idx="' + idx + '">−</button>'
+                 + '<span class="cqty-num">' + item.qty + '</span>'
+                 + '<button class="cqty-btn" data-action="plus" data-idx="' + idx + '">+</button>'
+                 + '</div>'
+                 + '<button class="remove-btn" data-action="remove" data-idx="' + idx + '">🗑 Remove</button>'
+                 + '</div>'
+                 + '</div>';
+        }).join('');
+
+        var freeShipNote = '<div style="color:#16a34a;font-size:0.85rem;font-weight:600;margin-top:0.5rem;">🎉 Free delivery on all orders!</div>';
+
+        root.innerHTML =
+            '<h1 class="cart-title">Your Cart (' + cart.length + ' item' + (cart.length !== 1 ? 's' : '') + ')</h1>'
+          + '<div class="cart-layout">'
+          + '<div class="cart-items">' + itemsHtml + '</div>'
+          + '<div class="cart-summary">'
+          + '<h2>Order Summary</h2>'
+          + '<div class="summary-row"><span>Subtotal</span><span>₹' + subtotal.toFixed(2) + '</span></div>'
+          + '<div class="summary-row"><span>Delivery Charge</span><span>₹' + delivery.toFixed(2) + '</span></div>'
+          + '<div class="summary-row total"><span>Total</span><span>₹' + total.toFixed(2) + '</span></div>'
+          + '<button class="btn-checkout" id="go-checkout">Proceed to Checkout →</button>'
+          + '<button onclick="window.location.hash=\'#/products\'" style="display:block;width:100%;margin-top:1rem;background:none;border:none;opacity:0.6;font-size:0.9rem;cursor:pointer;font-family:inherit;font-weight:600;">← Continue Shopping</button>'
+          + '</div>'
+          + '</div>';
+
+        // Event delegation
+        root.addEventListener('click', function(e) {
+            var btn = e.target.closest('[data-action]');
+            if (!btn) {
+                if (e.target.id === 'go-checkout') {
+                    window.location.hash = '#/checkout';
+                }
+                return;
+            }
+            var action = btn.dataset.action;
+            var idx    = parseInt(btn.dataset.idx);
+            var cart2  = Store.getState().cart;
+            var item   = cart2[idx];
+            if (!item) return;
+
+            if (action === 'plus') {
+                Store.addToCart({ productId: item.productId, variantId: item.variantId, qty: 1, price: item.price, name: item.name, variantName: item.variantName, imageUrl: item.imageUrl });
+            } else if (action === 'minus') {
+                if (item.qty > 1) {
+                    var updated = Store.getState().cart.map(function(c, i) {
+                        if (i === idx) return Object.assign({}, c, { qty: c.qty - 1 });
+                        return c;
+                    });
+                    Store.setState({ cart: updated });
+                    Store.saveCart();
+                    Store.updateCartBadge();
+                } else {
+                    Store.removeFromCart(item.productId, item.variantId);
+                }
+            } else if (action === 'remove') {
+                Store.removeFromCart(item.productId, item.variantId);
+            }
+            render();
+        });
+    }
+
+    render();
+
+    if (window.gsap) {
+        gsap.from('.cart-item', { y:30, opacity:0, duration:0.5, stagger:0.1, ease:'power2.out' });
+    }
+})();
+</script>
