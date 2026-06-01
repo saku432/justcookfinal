@@ -8,11 +8,17 @@ const puppeteerOptions = {
 if (process.platform === 'win32') {
     puppeteerOptions.executablePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 } else {
-    // Path installed by render-build.sh
+    // On Linux (Render): use the Chrome downloaded by puppeteer during npm install
+    try {
+        const puppeteer = require('puppeteer');
+        puppeteerOptions.executablePath = puppeteer.executablePath();
+    } catch (e) {
+        console.warn('puppeteer package not found, will try default');
+    }
 }
 
 const client = new Client({
-    authStrategy: new LocalAuth(), // Saves the session so you don't have to scan every time
+    authStrategy: new LocalAuth(),
     puppeteer: puppeteerOptions
 });
 
@@ -47,7 +53,6 @@ async function sendWhatsAppMessage(toPhone, message) {
         return;
     }
     try {
-        // Format phone to whatsapp id (e.g. 919840462831@c.us)
         const chatId = `${toPhone}@c.us`;
         await client.sendMessage(chatId, message);
         console.log(`WhatsApp message successfully sent to ${toPhone}`);
