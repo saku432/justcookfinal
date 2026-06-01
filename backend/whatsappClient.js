@@ -9,7 +9,6 @@ if (process.platform === 'win32') {
     puppeteerOptions.executablePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 } else {
     // Path installed by render-build.sh
-    puppeteerOptions.executablePath = '/usr/bin/google-chrome';
 }
 
 const client = new Client({
