@@ -7,14 +7,6 @@ const puppeteerOptions = {
 
 if (process.platform === 'win32') {
     puppeteerOptions.executablePath = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-} else {
-    // On Linux (Render): use the Chrome downloaded by puppeteer during npm install
-    try {
-        const puppeteer = require('puppeteer');
-        puppeteerOptions.executablePath = puppeteer.executablePath();
-    } catch (e) {
-        console.warn('puppeteer package not found, will try default');
-    }
 }
 
 const client = new Client({
@@ -25,15 +17,14 @@ const client = new Client({
 let isReady = false;
 
 client.on('qr', (qr) => {
-    console.log('\n\n======================================================');
-    console.log('📱 PLEASE SCAN THIS QR CODE WITH YOUR WHATSAPP APP 📱');
-    console.log('   (Go to Settings > Linked Devices > Link a Device)');
+    console.log('\n======================================================');
+    console.log('📱 SCAN THIS QR CODE WITH YOUR WHATSAPP APP 📱');
     console.log('======================================================\n');
     qrcode.generate(qr, { small: true });
 });
 
 client.on('ready', () => {
-    console.log('\n✅ WhatsApp Client is READY! Your backend can now send messages.\n');
+    console.log('\n✅ WhatsApp Client is READY!\n');
     isReady = true;
 });
 
@@ -45,22 +36,27 @@ client.on('auth_failure', msg => {
     console.error('WhatsApp Authentication failure:', msg);
 });
 
-client.initialize();
+// ✅ KEY FIX: Wrap initialize in try/catch so server doesn't crash if Chrome is missing
+(async () => {
+    try {
+        await client.initialize();
+    } catch (e) {
+        console.warn('⚠️ WhatsApp initialization failed (Chrome not found). Notifications disabled.', e.message);
+    }
+})();
 
 async function sendWhatsAppMessage(toPhone, message) {
     if (!isReady) {
-        console.log('WhatsApp client not ready yet. Skipping message.');
+        console.log('WhatsApp not ready. Skipping notification.');
         return;
     }
     try {
         const chatId = `${toPhone}@c.us`;
         await client.sendMessage(chatId, message);
-        console.log(`WhatsApp message successfully sent to ${toPhone}`);
+        console.log(`✅ WhatsApp message sent to ${toPhone}`);
     } catch (err) {
-        console.error('Failed to send WhatsApp message via whatsapp-web.js:', err);
+        console.error('Failed to send WhatsApp message:', err);
     }
 }
 
-module.exports = {
-    sendWhatsAppMessage
-};
+module.exports = { sendWhatsAppMessage };
