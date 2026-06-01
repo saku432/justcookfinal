@@ -2,8 +2,17 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
-const { sendWhatsAppMessage } = require('./whatsappClient');
 const path = require('path');
+
+// WhatsApp is optional — server still runs if Chrome is unavailable
+let sendWhatsAppMessage = async () => {};
+try {
+    const wa = require('./whatsappClient');
+    sendWhatsAppMessage = wa.sendWhatsAppMessage;
+    console.log('✅ WhatsApp client loaded.');
+} catch (e) {
+    console.warn('⚠️ WhatsApp disabled:', e.message);
+}
 
 const app = express();
 const port = process.env.PORT || 3000;
